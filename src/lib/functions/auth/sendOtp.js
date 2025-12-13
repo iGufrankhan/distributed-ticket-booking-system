@@ -1,6 +1,6 @@
 import { ApiResponse } from "../../../../utils/ApiResponse.js";
 import { createTransporter } from "../../../../utils/emailservices/createTransporter.js";
-import { generateOtp } from "../../../../utils/emailservices/generateOtp.js";
+import { generateOtp ,generateOtpWithExpiry} from "../../../../utils/emailservices/generateOtp.js";
 import OTP from "../../../models/otp.models.js";
 import { OTP_EXPIRY_MINUTES, EMAIL_FROM } from "../../../../utils/constant.js";
 
@@ -8,7 +8,7 @@ export const sendOtp = async (email, purpose = "signup") => {
   try {
     // Generate OTP
     const otp = generateOtp();
-    const expiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000);
+    const expiresAt = generateOtpWithExpiry(6, OTP_EXPIRY_MINUTES).expiresAt;
 
     await OTP.deleteMany({ email, purpose });
     // Save OTP to database

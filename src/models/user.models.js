@@ -47,6 +47,20 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isLocked: {
+  type: Boolean,
+  default: false,
+},
+
+failedLoginAttempts: {
+  type: Number,
+  default: 0,
+},
+
+twoFactorEnabled: {
+  type: Boolean,
+  default: false,
+},
 
    
 

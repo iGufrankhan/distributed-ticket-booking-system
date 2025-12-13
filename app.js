@@ -7,8 +7,10 @@ import dotenv from "dotenv";
 
 
 
-import authRoutes from "./src/routes/auth.routes.js";
-import resetPasswordRoutes from "./src/routes/resetPassword.routes.js";
+import authRoutes from "./src/routes/authRoutes/auth.routes.js";
+import  outhRoutes from "./src/routes/authRoutes/outh.routes.js";
+import resetPasswordRoutes from "./src/routes/authRoutes/resetPassword.routes.js";
+import twoFactorRoutes from "./src/routes/authRoutes/2fa.routes.js";
 
 
 
@@ -35,6 +37,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/auth", outhRoutes);
 app.use("/api/auth", resetPasswordRoutes);
+app.use("/api/2fa", twoFactorRoutes);
 
 export default app;

@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { User } from "../models/User.models.js";
+import { User } from "../models/user.models.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import { JWT_SECRET } from "../../utils/constant.js";
@@ -38,8 +38,46 @@ export const login = async ({ email, password }) => {
   const user = await User.findOne({ email }).select("+password");
   if (!user) throw new ApiError(400, "Invalid email or password");
 
+  if (!user.isEmailVerified) {
+    throw new ApiError(403, "Please verify your email before login");
+  }
+
+  if (user.isLocked) {
+    throw new ApiError(403, "Account is locked. Please contact support.");
+  }
+
   const isValid = await bcrypt.compare(password, user.password);
-  if (!isValid) throw new ApiError(400, "Invalid email or password");
+
+  if (!isValid) {
+    user.failedLoginAttempts += 1;
+
+    if (user.failedLoginAttempts >= 5) {
+      user.isLocked = true;
+    }
+
+    await user.save();
+    throw new ApiError(401, "Invalid credentials");
+  }
+
+  // Reset failed attempts on successful login
+  user.failedLoginAttempts = 0;
+  await user.save();
+
+  // Check if 2FA is enabled
+  if (user.twoFactorEnabled) {
+    // Send 2FA OTP
+    const { send2FAOtp } = await import("./2fa.service.js");
+    await send2FAOtp(user);
+    
+    return new ApiResponse(
+      200,
+      {
+        requires2FA: true,
+        email: user.email,
+      },
+      "2FA code sent to your email. Please verify to complete login."
+    );
+  }
 
   const token = jwt.sign(
     { id: user._id, isAdmin: user.isAdmin },

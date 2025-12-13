@@ -1,7 +1,8 @@
-import { User } from "../../models/User.models.js";
+import { User } from "../../models/user.models.js";
 
 export const generateUsernameFromEmail = async (email) => {
   const baseUsername = email
+
     .split("@")[0]
     .toLowerCase()
     .replace(/[^a-z0-9]/g, "");
