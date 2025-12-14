@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { initiate2FA, verifyAndEnable2FA, verify2FA, disable2FA } from "../../controllers/2fa.controllers.js";
+import { initiate2FA, verifyAndEnable2FA, verify2FA, disable2FA } from "../../controllers/auth/2fa.controllers.js";
 import { verifyJWT } from "../../middlewares/auth/auth.middlewares.js";
-import { validate } from "../../middlewares/auth/validate.middleware.js";
+import { validate } from "../../middlewares/limiterandverify/validate.middleware.js";
 import Joi from "joi";
 
 const router = Router();

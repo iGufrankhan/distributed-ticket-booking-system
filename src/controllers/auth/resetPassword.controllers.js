@@ -1,8 +1,8 @@
-import {ApiError} from '../../utils/ApiError.js'; 
-import {asyncHandler} from '../../utils/AsyncHandler.js';
-import { ApiResponse } from '../../utils/ApiResponse.js';
+import {ApiError} from '../../../utils/ApiError.js'; 
+import {asyncHandler} from '../../../utils/AsyncHandler.js';
+import { ApiResponse } from '../../../utils/ApiResponse.js';
 
-import {sendResetPasswordOtp, resetPasswordWithOtp} from '../services/resetPassword.service.js';
+import {sendResetPasswordOtp, resetPasswordWithOtp} from '../../services/auth/resetPassword.service.js';
 
 
 

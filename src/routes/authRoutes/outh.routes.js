@@ -1,4 +1,4 @@
-import {googleOAuthController, githubOAuthController} from '../../controllers/outh.controllers.js';
+import {googleOAuthController, githubOAuthController} from '../../controllers/auth/outh.controllers.js';
 import express from 'express';
 
 

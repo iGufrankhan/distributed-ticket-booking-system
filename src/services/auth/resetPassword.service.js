@@ -1,10 +1,10 @@
-import {User} from '../models/user.models.js';
-import {ApiError} from '../../utils/ApiError.js';
-import OTP from '../models/otp.models.js';
+import {User} from '../../models/user.models.js';
+import {ApiError} from '../../../utils/ApiError.js';
+import OTP from '../../models/otp.models.js';
 import bcrypt from "bcryptjs";
-import { sendOtp } from '../lib/functions/auth/sendOtp.js';
-import { generateOtp } from '../../utils/emailservices/generateOtp.js';
-import { OTP_EXPIRY_MINUTES } from '../../utils/constant.js';
+import { sendOtp } from '../../lib/functions/auth/sendOtp.js';
+import { generateOtp } from '../../../utils/emailservices/generateOtp.js';
+import { OTP_EXPIRY_MINUTES } from '../../../utils/constant.js';
 
 
 

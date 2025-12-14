@@ -1,13 +1,13 @@
 
-import { ApiError } from "../../utils/ApiError.js";
-import { ApiResponse } from "../../utils/ApiResponse.js";
-import { asyncHandler } from "../../utils/AsyncHandler.js";
-import { send2FAOtp } from "../services/2fa.service.js";
-import  OTP  from "../models/otp.models.js";
-import { User } from "../models/user.models.js";
+import { ApiError } from "../../../utils/ApiError.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
+import { asyncHandler } from "../../../utils/AsyncHandler.js";
+import { send2FAOtp } from "../../services/auth/2fa.service.js";
+import  OTP  from "../../models/otp.models.js";
+import { User } from "../../models/user.models.js";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../../utils/constant.js";
-import {generateAccessToken} from "../../utils/token.js";
+import { JWT_SECRET } from "../../../utils/constant.js";
+import {generateAccessToken} from "../../../utils/token.js";
 
 /**
  * Request to enable 2FA - sends OTP to email

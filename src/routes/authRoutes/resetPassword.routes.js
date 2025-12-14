@@ -2,8 +2,8 @@ import express from "express";
 import {
   sendResetPasswordOtpController,
   resetPasswordWithOtpController,
-} from "../../controllers/resetPassword.controllers.js";
-import { validate } from "../../middlewares/auth/validate.middleware.js";
+} from "../../controllers/auth/resetPassword.controllers.js";
+import { validate } from "../../middlewares/limiterandverify/validate.middleware.js";
 import { 
   forgotPasswordSchema, 
   resetPasswordSchema 
@@ -13,7 +13,7 @@ import
 {
   otpLimiter
 
-} from  "../../middlewares/auth/rateLimiter.middlewares.js";
+} from  "../../middlewares/limiterandverify/rateLimiter.middlewares.js";
 
 const router = express.Router();
 

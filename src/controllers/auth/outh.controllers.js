@@ -2,9 +2,9 @@
 import {
   googleOAuthService,
     githubOAuthService,
-} from '../services/outh.service.js';
-import {asyncHandler} from '../../utils/AsyncHandler.js';
-import {ApiResponse} from '../../utils/ApiResponse.js';
+} from '../../services/auth/outh.service.js';
+import {asyncHandler} from '../../../utils/AsyncHandler.js';
+import {ApiResponse} from '../../../utils/ApiResponse.js';
 
 
 export const googleOAuthController = asyncHandler(async (req, res, next) => {

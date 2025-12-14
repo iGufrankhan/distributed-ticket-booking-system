@@ -547,22 +547,25 @@ Core authentication is solid. Main gap is refresh token system.
 ```
 src/
 ├── controllers/
-│   ├── auth.controllers.js
-│   ├── 2fa.controllers.js
-│   ├── logOut.controllers.js
-│   ├── resetPassword.controllers.js
-│   └── outh.controllers.js
+│   └── auth/
+│       ├── auth.controllers.js
+│       ├── 2fa.controllers.js
+│       ├── logOut.controllers.js
+│       ├── resetPassword.controllers.js
+│       └── outh.controllers.js
 ├── services/
-│   ├── auth.service.js
-│   ├── 2fa.service.js
-│   ├── resetPassword.service.js
-│   └── outh.service.js
+│   └── auth/
+│       ├── auth.service.js
+│       ├── 2fa.service.js
+│       ├── resetPassword.service.js
+│       └── outh.service.js
 ├── models/
 │   ├── user.models.js
 │   └── otp.models.js
 ├── middlewares/
-│   └── auth/
-│       ├── auth.middlewares.js
+│   ├── auth/
+│   │   └── auth.middlewares.js
+│   └── limiterandverify/
 │       ├── validate.middleware.js
 │       └── rateLimiter.middlewares.js
 ├── routes/
@@ -572,10 +575,12 @@ src/
 │       ├── resetPassword.routes.js
 │       └── outh.routes.js
 └── lib/
-    └── functions/
-        └── auth/
-            ├── emailSignup.js
-            └── sendOtp.js
+    ├── functions/
+    │   └── auth/
+    │       ├── emailSignup.js
+    │       └── sendOtp.js
+    └── helper/
+        └── generateUsernamefromemail.js
 
 utils/
 ├── validators/

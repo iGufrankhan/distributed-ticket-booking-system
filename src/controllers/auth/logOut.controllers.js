@@ -1,4 +1,4 @@
-import { asyncHandler } from "../../utils/AsyncHandler.js";
+import { asyncHandler } from "../../../utils/AsyncHandler.js";
 
 export const logoutUser = asyncHandler(async (req, res) => {
   return res.status(200).json({

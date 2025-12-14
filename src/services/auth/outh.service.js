@@ -1,10 +1,10 @@
 import axios from 'axios';
 import JWT from 'jsonwebtoken';
-import { ApiError } from '../../utils/ApiError.js';
-import { User } from '../models/user.models.js';
-import { generateUsernameFromEmail } from '../lib/helper/generateUsernamefromemail.js';
-import {GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SECRET, CLIENT_URL} from '../../utils/constant.js';
-import { generateAccessToken } from '../../utils/token.js';
+import { ApiError } from '../../../utils/ApiError.js';
+import { User } from '../../models/user.models.js';
+import { generateUsernameFromEmail } from '../../lib/helper/generateUsernamefromemail.js';
+import {GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SECRET, CLIENT_URL} from '../../../utils/constant.js';
+import { generateAccessToken } from '../../../utils/token.js';
 
 export const googleOAuthService = async (code, redirectUri = `${CLIENT_URL}/auth/google/callback`) => {    
     // Exchange code for access token

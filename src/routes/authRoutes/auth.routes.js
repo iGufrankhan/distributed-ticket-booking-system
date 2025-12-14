@@ -7,10 +7,10 @@ import {
   getMe,
   resendVerificationOtp,
   changePassword
-} from "../../controllers/auth.controllers.js";
+} from "../../controllers/auth/auth.controllers.js";
 import { verifyJWT } from "../../middlewares/auth/auth.middlewares.js";
-import { validate } from "../../middlewares/auth/validate.middleware.js";
-import {logoutUser} from "../../controllers/logOut.controllers.js";
+import { validate } from "../../middlewares/limiterandverify/validate.middleware.js";
+import {logoutUser} from "../../controllers/auth/logOut.controllers.js";
 import { 
   sendOtpSchema, 
   verifyOtpSchema, 
@@ -21,7 +21,7 @@ import {
 import {
   otpLimiter,
   loginLimiter
-} from  "../../middlewares/auth/rateLimiter.middlewares.js";
+} from  "../../middlewares/limiterandverify/rateLimiter.middlewares.js";
 
 const router = Router();
 

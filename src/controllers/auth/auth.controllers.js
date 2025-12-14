@@ -1,13 +1,13 @@
-import { asyncHandler } from "../../utils/AsyncHandler.js";
-import { ApiResponse } from "../../utils/ApiResponse.js";
-import { ApiError } from "../../utils/ApiError.js";
-import { login } from "../services/auth.service.js";
-import { User } from "../models/user.models.js";
+import { asyncHandler } from "../../../utils/AsyncHandler.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
+import { ApiError } from "../../../utils/ApiError.js";
+import { login } from "../../services/auth/auth.service.js";
+import { User } from "../../models/user.models.js";
 import { 
   initiateEmailSignup, 
   verifyEmailSignupOtp, 
   completeEmailSignup 
-} from "../lib/functions/auth/emailSignup.js";
+} from "../../lib/functions/auth/emailSignup.js";
 
 // Step 1: Send OTP to email
 export const sendOtp = asyncHandler(async (req, res) => {
