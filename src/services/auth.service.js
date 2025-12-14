@@ -4,6 +4,7 @@ import { User } from "../models/user.models.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import { JWT_SECRET } from "../../utils/constant.js";
+import { generateAccessToken } from "../../utils/token.js";
 
 export const register = async ({ name, email, password, role = "user" }) => {
   const existed = await User.findOne({ email });
@@ -79,11 +80,8 @@ export const login = async ({ email, password }) => {
     );
   }
 
-  const token = jwt.sign(
-    { id: user._id, isAdmin: user.isAdmin },
-    JWT_SECRET,
-    { expiresIn: "1d" }
-  );
+  console.log("user._id type:", typeof user._id, "value:", user._id);
+  const token = generateAccessToken(user._id);
 
   return new ApiResponse(
     200,

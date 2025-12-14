@@ -4,6 +4,7 @@ import { ApiError } from '../../utils/ApiError.js';
 import { User } from '../models/user.models.js';
 import { generateUsernameFromEmail } from '../lib/helper/generateUsernamefromemail.js';
 import {GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SECRET, CLIENT_URL} from '../../utils/constant.js';
+import { generateAccessToken } from '../../utils/token.js';
 
 export const googleOAuthService = async (code, redirectUri = `${CLIENT_URL}/auth/google/callback`) => {    
     // Exchange code for access token
@@ -45,7 +46,7 @@ export const googleOAuthService = async (code, redirectUri = `${CLIENT_URL}/auth
         await user.save();
     }
     // Generate JWT
-    const token = JWT.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '7d' });
+    const token = generateAccessToken({ userId: user._id });
     return { user, token };
 };
 
@@ -95,7 +96,7 @@ export const githubOAuthService = async (code) => {
         await user.save();
     }
     // Generate JWT
-    const token = JWT.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '7d' });
+    const token = generateAccessToken({ userId: user._id });
     return { user, token };
 };
 

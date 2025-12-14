@@ -29,8 +29,8 @@ export const verifyOtp = asyncHandler(async (req, res) => {
 
 // Step 3: Complete Registration
 export const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
-  const result = await completeEmailSignup(name, email, password);
+  const { fullName, email, password } = req.body;
+  const result = await completeEmailSignup(fullName, email, password);
   
   res.status(201).json(result);
 });

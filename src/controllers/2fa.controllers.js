@@ -7,6 +7,7 @@ import  OTP  from "../models/otp.models.js";
 import { User } from "../models/user.models.js";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../../utils/constant.js";
+import {generateAccessToken} from "../../utils/token.js";
 
 /**
  * Request to enable 2FA - sends OTP to email
@@ -97,7 +98,7 @@ export const verify2FA = asyncHandler(async (req, res) => {
     const { email, otp } = req.body;
     
     // Verify OTP
-    const otpRecord = await Otp.findOne({ 
+    const otpRecord = await OTP.findOne({ 
         email, 
         otp, 
         purpose: "login2FA",
@@ -115,14 +116,10 @@ export const verify2FA = asyncHandler(async (req, res) => {
     }
 
     // Delete used OTP
-    await Otp.deleteOne({ _id: otpRecord._id });
+    await OTP.deleteOne({ _id: otpRecord._id });
     
     // Generate token
-    const token = jwt.sign(
-        { id: user._id, isAdmin: user.isAdmin },
-        JWT_SECRET,
-        { expiresIn: "1d" }
-    );
+    const token = generateAccessToken(user._id);
 
     res.status(200).json(
         new ApiResponse(
