@@ -1,7 +1,7 @@
 
-import { ApiError } from "../../../utils/ApiError.js";
-import { ApiResponse } from "../../../utils/ApiResponse.js";
-import { asyncHandler } from "../../../utils/AsyncHandler.js";
+import {ApiError} from "../../../utils/ApiError.js";
+import {ApiResponse} from "../../../utils/ApiResponse.js";
+import {asyncHandler} from "../../../utils/AsyncHandler.js";
 import { send2FAOtp } from "../../services/auth/2fa.service.js";
 import  OTP  from "../../models/otp.models.js";
 import { User } from "../../models/user.models.js";

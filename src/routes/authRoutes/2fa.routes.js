@@ -2,23 +2,12 @@ import { Router } from "express";
 import { initiate2FA, verifyAndEnable2FA, verify2FA, disable2FA } from "../../controllers/auth/2fa.controllers.js";
 import { verifyJWT } from "../../middlewares/auth/auth.middlewares.js";
 import { validate } from "../../middlewares/limiterandverify/validate.middleware.js";
+import { verifyOtpSchema, disable2FASchema, verify2FASchema } from "../../validations/auth/2fa.validations.js";
 import Joi from "joi";
 
 const router = Router();
 
-// Validation schemas
-const verify2FASchema = Joi.object({
-  email: Joi.string().email().required(),
-  otp: Joi.string().length(6).required(),
-});
 
-const verifyOtpSchema = Joi.object({
-  otp: Joi.string().length(6).required(),
-});
-
-const disable2FASchema = Joi.object({
-  password: Joi.string().required(),
-});
 
 // Protected routes - require authentication
 router.post("/enable/request", verifyJWT, initiate2FA);

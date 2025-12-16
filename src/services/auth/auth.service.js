@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "../../models/user.models.js";
 import { ApiError } from "../../../utils/ApiError.js";
-import { ApiResponse } from "../../../utils/ApiResponse.js";
+import {ApiResponse} from "../../../utils/ApiResponse.js";
 import { JWT_SECRET } from "../../../utils/constant.js";
 import { generateAccessToken } from "../../../utils/token.js";
 

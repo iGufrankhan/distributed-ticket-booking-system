@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema(
       enum: ["email", "google", "github"],
       default: "email",
     },
+    isblocked: {
+      type: Boolean,
+      default: false,
+    },
 
     googleId: {
       type: String,

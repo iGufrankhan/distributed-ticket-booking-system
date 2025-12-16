@@ -3,7 +3,7 @@ import OTP from "../../../models/otp.models.js";
 import bcrypt from "bcryptjs";
 import { generateUsernameFromEmail } from "../../helper/generateUsernamefromemail.js";
 import { ApiError } from "../../../../utils/ApiError.js";
-import { ApiResponse } from "../../../../utils/ApiResponse.js";
+import {ApiResponse} from "../../../../utils/ApiResponse.js";
 import { sendOtp } from "./sendOtp.js";
 import { EMAIL_FROM, CLIENT_URL } from "../../../../utils/constant.js";
 import {generateAccessToken} from "../../../../utils/token.js";

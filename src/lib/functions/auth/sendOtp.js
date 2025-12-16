@@ -1,4 +1,4 @@
-import { ApiResponse } from "../../../../utils/ApiResponse.js";
+import {ApiResponse} from "../../../../utils/ApiResponse.js";
 import { createTransporter } from "../../../../utils/emailservices/createTransporter.js";
 import { generateOtp ,generateOtpWithExpiry} from "../../../../utils/emailservices/generateOtp.js";
 import OTP from "../../../models/otp.models.js";
