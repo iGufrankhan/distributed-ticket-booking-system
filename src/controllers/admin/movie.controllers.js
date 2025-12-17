@@ -21,6 +21,10 @@ export const createMovie = asyncHandler(async (req, res) => {
         casts,
         voteAverage,
         runtime,
+        trailerUrl,
+        rating,
+        reviewCount
+
     } = req.body;
 
 
@@ -38,6 +42,9 @@ export const createMovie = asyncHandler(async (req, res) => {
         casts,
         voteAverage,
         runtime,
+        trailerUrl,
+        rating,
+        reviewCount,
         createdBy: req.admin._id,
         status: "active",
     });

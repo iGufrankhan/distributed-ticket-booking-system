@@ -80,6 +80,21 @@ twoFactorEnabled: {
       type: String,
       trim: true,
     },
+    address: {
+      type: String,
+      trim: true,
+    },
+    profilePicture: {
+      type: String,
+      trim: true,
+    },
+    language: {
+      type: String,
+      trim: true,
+    },
+    
+
+
 
    
   },

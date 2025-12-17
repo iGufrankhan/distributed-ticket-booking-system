@@ -2,22 +2,12 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-
-
-
-
-
 import authRoutes from "./src/routes/authRoutes/auth.routes.js";
-import  outhRoutes from "./src/routes/authRoutes/outh.routes.js";
+import outhRoutes from "./src/routes/authRoutes/outh.routes.js";
 import resetPasswordRoutes from "./src/routes/authRoutes/resetPassword.routes.js";
 import twoFactorRoutes from "./src/routes/authRoutes/2fa.routes.js";
 import adminRoutes from "./src/routes/admin/admin.routes.js";
-
-
-
-
-
-
+import userworkRoutes from "./src/routes/userworkRoutes/userwork.routes.js"; // ✅ FIXED
 
 // Load environment variables
 dotenv.config();
@@ -37,13 +27,12 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use("/api/auth", authRoutes);
-app.use("/api/auth", outhRoutes);
-app.use("/api/auth", resetPasswordRoutes);
-app.use("/api/2fa", twoFactorRoutes);
-app.use("/api/admin", adminRoutes);
-
-// Global Error Handler 
-
+// Routes with API versioning
+app.use("/api/v1/auth", authRoutes);          
+app.use("/api/v1/auth", outhRoutes);          
+app.use("/api/v1/auth", resetPasswordRoutes);  
+app.use("/api/v1/2fa", twoFactorRoutes);       
+app.use("/api/v1/admin", adminRoutes);         
+app.use("/api/v1/user", userworkRoutes);       
 
 export default app;
