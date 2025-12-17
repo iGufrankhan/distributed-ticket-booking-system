@@ -1,76 +1,67 @@
 # 🎬 Distributed Ticket Booking System
 
-<div align="center">
+> A production-ready movie ticket booking REST API similar to BookMyShow - built with Node.js, Express, and MongoDB
 
-![Node.js](https://img.shields.io/badge/Node.js-v22.17.1-green)
-![Express](https://img.shields.io/badge/Express-4.x-blue)
-![MongoDB](https://img.shields.io/badge/MongoDB-Database-brightgreen)
-![License](https://img.shields.io/badge/License-MIT-yellow)
-
-**A Full-Stack Movie Ticket Booking Platform with Admin Dashboard**
-
-[Features](#-features) • [Installation](#-installation) • [API Docs](#-api-documentation) • [Tech Stack](#-tech-stack)
-
-</div>
+[![Node.js](https://img.shields.io/badge/Node.js-v22.17.1-green)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-5.x-blue)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Database-brightgreen)](https://www.mongodb.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
 ---
 
-## 📖 About The Project
+## 📖 About
 
-A comprehensive **movie ticket booking system** similar to BookMyShow, built with Node.js and MongoDB. This platform allows users to browse movies, discover theaters, book shows, and enjoy exclusive offers while administrators manage the entire ecosystem through a powerful dashboard.
+A **complete backend system** for movie ticket booking with advanced features including multi-factor authentication, OAuth integration, role-based access control, and real-time notifications. Users can browse movies, discover theaters, book shows, and redeem offers while admins manage the entire platform through comprehensive APIs.
 
-### ✨ Why This Project?
-
-- 🎯 **Production-Ready**: Full authentication, authorization, and security features
-- 🏗️ **Scalable Architecture**: MVC pattern with clean separation of concerns
-- 🔐 **Secure**: JWT authentication, 2FA, OAuth integration, and password encryption
-- 📱 **RESTful APIs**: 50+ well-documented endpoints
-- 👨‍💼 **Admin Control**: Complete management system for movies, venues, and shows
+**🎯 Perfect for:**
+- Backend portfolio projects
+- Learning production-grade Node.js architecture
+- Understanding complex authentication flows
+- Building scalable REST APIs
 
 ---
 
-## 🚀 Features
+## ✨ Key Features
 
 ### 🔐 Authentication & Security
-- ✅ Email/Password signup and login
-- ✅ Two-Factor Authentication (2FA)
-- ✅ OAuth integration (Google, Facebook)
-- ✅ Password reset with OTP verification
-- ✅ JWT-based session management
-- ✅ Role-based access control (User/Admin)
+- **Multi-factor Authentication**: Email OTP + 2FA verification
+- **OAuth Integration**: Google & GitHub login
+- **JWT Sessions**: Secure token-based authentication
+- **Password Security**: bcrypt hashing with salt
+- **Rate Limiting**: OTP & login rate limiting
+- **Email Verification**: Required before login
+- **Password Reset**: OTP-based password recovery
 
 ### 👤 User Features
-- 🎬 **Browse Movies**: Search and filter by genre, language, rating
-- 🏢 **Discover Venues**: Find theaters by city and location
-- 🎫 **Book Shows**: View available shows with pricing and timings
-- 📦 **Order History**: Track all your bookings
-- 🎁 **Offers & Deals**: Apply coupons and get discounts
-- 🍽️ **Restaurant Integration**: Discover dining options near theaters
-- 📺 **OTT Content**: Browse trending shows and new releases
-- 👤 **Profile Management**: Update personal information
+- Browse movies with filters (genre, language, rating)
+- Discover theaters by city and location
+- View available shows with real-time pricing
+- Order history and booking management
+- Apply promotional coupons and offers
+- Restaurant and OTT content recommendations
+- Profile management
 
 ### 👨‍💼 Admin Features
-- 🎬 **Movie Management**: Add, edit, delete movies with bulk operations
-- 🏢 **Venue Management**: Manage theaters and screens
-- 🎫 **Show Management**: Create, update, cancel shows
-- 👥 **User Management**: Block/unblock users with bulk actions
-- 📊 **Dashboard**: Real-time statistics and analytics
-- 📢 **Notifications**: Send targeted announcements
-- 🎁 **Offer Management**: Create and manage promotional campaigns
+- Complete CRUD for movies, venues, and shows
+- Bulk operations (delete movies, toggle venues, cancel shows)
+- User management (block/unblock with restrictions)
+- Real-time dashboard with analytics
+- Targeted notifications (all users, movie watchers, venue visitors)
+- Offer and coupon management with usage tracking
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Category | Technology |
-|----------|-----------|
-| **Backend** | Node.js, Express.js |
-| **Database** | MongoDB, Mongoose ODM |
-| **Authentication** | JWT, OAuth 2.0, Speakeasy (2FA) |
-| **Security** | bcrypt, helmet, rate limiting |
-| **Email** | Nodemailer |
-| **Validation** | express-validator |
-| **Environment** | dotenv |
+```
+Backend:        Node.js, Express.js
+Database:       MongoDB, Mongoose ODM
+Authentication: JWT, OAuth 2.0, Speakeasy (2FA)
+Email:          Nodemailer
+Validation:     Joi, express-validator
+Security:       bcrypt, express-rate-limit
+Queue:          BullMQ, Redis
+```
 
 ---
 
@@ -78,104 +69,66 @@ A comprehensive **movie ticket booking system** similar to BookMyShow, built wit
 
 ```
 distributed-ticket-booking-system/
-│
 ├── src/
-│   ├── Config/
-│   │   └── dbConfig.js              # MongoDB connection
-│   │
+│   ├── Config/              # Database configuration
 │   ├── controllers/
-│   │   ├── admin/                   # Admin controllers
-│   │   │   ├── movie.controllers.js
-│   │   │   ├── venue.controllers.js
-│   │   │   ├── show.controllers.js
-│   │   │   ├── user.controllers.js
-│   │   │   ├── dashboard.controllers.js
-│   │   │   └── notification.controllers.js
-│   │   │
-│   │   ├── auth/                    # Authentication controllers
-│   │   │   ├── auth.controllers.js
-│   │   │   ├── 2fa.controllers.js
-│   │   │   ├── outh.controllers.js
-│   │   │   └── resetPassword.controllers.js
-│   │   │
-│   │   ├── user/                    # User controllers
-│   │   │   ├── profile.controllers.js
-│   │   │   ├── movie.controllers.js
-│   │   │   ├── venue.controllers.js
-│   │   │   ├── show.controllers.js
-│   │   │   └── order.controllers.js
-│   │   │
-│   │   └── offersDeals/             # Offers & deals
-│   │       ├── offer.controllers.js
-│   │       ├── resturants.controllers.js
-│   │       └── ott.constrollers.js
-│   │
-│   ├── models/                      # MongoDB schemas
-│   │   ├── user.models.js
-│   │   ├── movie.models.js
-│   │   ├── venue.models.js
-│   │   ├── show.models.js
-│   │   ├── order.models.js
-│   │   ├── offer.models.js
-│   │   ├── restaurant.models.js
-│   │   ├── ott.models.js
-│   │   ├── notification.models.js
-│   │   └── otp.models.js
-│   │
-│   ├── routes/                      # API routes
-│   │   ├── authRoutes/
-│   │   ├── admin/
-│   │   └── userworkRoutes/
-│   │
-│   ├── middlewares/                 # Custom middlewares
-│   │   ├── auth/
-│   │   └── limiterandverify/
-│   │
-│   ├── services/                    # Business logic
-│   │   ├── auth/
-│   │   └── events/
-│   │
-│   └── lib/                         # Helper functions
-│
-├── utils/                           # Utility functions
-│   ├── ApiError.js
-│   ├── ApiResponse.js
-│   ├── AsyncHandler.js
-│   ├── emailservices/
-│   └── validators/
-│
-├── app.js                           # Express app setup
-├── index.js                         # Server entry point
-├── package.json
-└── .env                            # Environment variables
+│   │   ├── admin/           # Admin CRUD operations
+│   │   ├── auth/            # Authentication flows
+│   │   ├── user/            # User operations
+│   │   └── offersDeals/     # Offers, restaurants, OTT
+│   ├── models/              # 10 Mongoose schemas
+│   ├── routes/              # Express route handlers
+│   ├── middlewares/         # Auth, rate limiting, validation
+│   ├── services/            # Business logic
+│   └── lib/                 # Helper functions
+├── utils/                   # Shared utilities
+├── app.js                   # Express app setup
+├── index.js                 # Server entry point
+├── USERWORK.MD             # User API documentation
+├── ADMINWORK.MD            # Admin API documentation
+├── AUTH_DETAILS.md         # Complete auth guide
+└── 2FA_GUIDE.md            # 2FA implementation guide
 ```
+
+**Models (10):** User, Movie, Venue, Show, Order, Offer, Restaurant, OTT, Notification, OTP
 
 ---
 
-## ⚙️ Installation
+## ⚙️ Quick Start
 
 ### Prerequisites
-- Node.js (v14 or higher)
+- Node.js v14+
 - MongoDB (local or Atlas)
 - npm or yarn
 
-### Step 1: Clone the Repository
+### Installation
+
 ```bash
-git clone https://github.com/yourusername/distributed-ticket-booking-system.git
+# Clone repository
+git clone https://github.com/iGufrankhan/distributed-ticket-booking-system.git
 cd distributed-ticket-booking-system
-```
 
-### Step 2: Install Dependencies
-```bash
+# Install dependencies
 npm install
+
+# Setup environment
+cp .env.example .env
+# Edit .env with your configuration
+
+# Start server
+npm start
 ```
 
-### Step 3: Configure Environment Variables
+Server runs at `http://localhost:5000` 🚀
 
-Create a `.env` file in the root directory:
+---
+
+## 🔑 Environment Setup
+
+Create `.env` file in root directory:
 
 ```env
-# Server Configuration
+# Server
 PORT=5000
 NODE_ENV=development
 
@@ -189,46 +142,22 @@ JWT_REFRESH_SECRET=your_refresh_token_secret
 JWT_EXPIRY=7d
 REFRESH_TOKEN_EXPIRY=30d
 
-# Email Configuration (for OTP and notifications)
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASSWORD=your_app_password
+# Email Configuration (Gmail for OTP/notifications)
+GMAIL_USER=your_email@gmail.com
+GMAIL_APP_PASSWORD=your_gmail_app_password
 
-# OAuth (Google)
+# OAuth - Google
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
-GOOGLE_CALLBACK_URL=http://localhost:5000/api/v1/auth/google/callback
 
-# OAuth (Facebook)
-FACEBOOK_APP_ID=your_facebook_app_id
-FACEBOOK_APP_SECRET=your_facebook_app_secret
-FACEBOOK_CALLBACK_URL=http://localhost:5000/api/v1/auth/facebook/callback
+# OAuth - GitHub
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
 
-# Frontend URL (for CORS)
-FRONTEND_URL=http://localhost:3000
+OAUTH_REDIRECT_URL=http://localhost:5000/api/auth
 ```
 
-### Step 4: Start the Server
-```bash
-npm start
-```
-
-The server will start at `http://localhost:5000` 🚀
-
----
-
-## 🔑 Environment Variables Explained
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `PORT` | Server port number | ✅ |
-| `MONGO_URI` | MongoDB connection string | ✅ |
-| `JWT_SECRET` | Secret key for JWT tokens | ✅ |
-| `EMAIL_USER` | Email for sending OTPs | ✅ |
-| `EMAIL_PASSWORD` | Email app password | ✅ |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID | ❌ |
-| `FACEBOOK_APP_ID` | Facebook OAuth app ID | ❌ |
+**📧 Gmail Setup:** Enable 2-step verification and create an [App Password](https://support.google.com/accounts/answer/185833)
 
 ---
 
@@ -239,257 +168,194 @@ The server will start at `http://localhost:5000` 🚀
 http://localhost:5000/api/v1
 ```
 
-### 🔐 Authentication Routes
-- `POST /auth/signup` - Register new user
-- `POST /auth/login` - Login user
-- `POST /auth/logout` - Logout user
-- `POST /auth/forgot-password` - Send password reset OTP
-- `POST /auth/reset-password` - Reset password with OTP
-- `POST /auth/2fa/enable` - Enable 2FA
-- `POST /auth/2fa/verify` - Verify 2FA code
-- `GET /auth/google` - Google OAuth login
-- `GET /auth/facebook` - Facebook OAuth login
+### Quick Reference
 
-### 👤 User Routes
-- `GET /user/profile` - Get user profile
-- `PUT /user/profile` - Update profile
-- `DELETE /user/profile` - Delete account
-- `GET /user/movies` - Browse movies
-- `GET /user/venues` - Browse venues
-- `GET /user/shows` - View available shows
-- `GET /user/orders` - Order history
-- `GET /user/offers` - View offers
-- `POST /user/offers/:id/use` - Apply coupon
+**Authentication:** See [AUTH_DETAILS.md](AUTH_DETAILS.md) for complete auth flows  
+**User APIs:** See [USERWORK.MD](USERWORK.MD) for all user endpoints  
+**Admin APIs:** See [ADMINWORK.MD](ADMINWORK.MD) for all admin endpoints  
+**2FA Guide:** See [2FA_GUIDE.md](2FA_GUIDE.md) for two-factor authentication
 
-### 👨‍💼 Admin Routes (Protected)
-- `POST /admin/movies` - Add movie
-- `PUT /admin/movies/:id` - Update movie
-- `DELETE /admin/movies/:id` - Delete movie
-- `POST /admin/movies/bulk-delete` - Bulk delete movies
-- `POST /admin/venues` - Add venue
-- `POST /admin/shows` - Create show
-- `GET /admin/dashboard` - Dashboard stats
-- `POST /admin/notifications` - Send notifications
+### Main Endpoints
 
-**📖 Complete API Documentation:** [userwork.md](userwork.md)
+```bash
+# Health Check
+GET /
+
+# Authentication
+POST /api/v1/auth/send-otp              # Step 1: Send signup OTP
+POST /api/v1/auth/verify-otp            # Step 2: Verify OTP
+POST /api/v1/auth/register              # Step 3: Complete signup
+POST /api/v1/auth/login                 # Login
+POST /api/v1/auth/logout                # Logout
+POST /api/v1/auth/resend-otp            # Resend OTP
+POST /api/v1/auth/change-password       # Change password
+POST /api/v1/auth/forgot-password       # Forgot password OTP
+POST /api/v1/auth/reset-password        # Reset password
+GET  /api/v1/auth/google/callback       # Google OAuth
+GET  /api/v1/auth/github/callback       # GitHub OAuth
+
+# 2FA
+POST /api/v1/2fa/enable/request         # Request 2FA enable
+POST /api/v1/2fa/enable/verify          # Verify and enable 2FA
+POST /api/v1/2fa/disable                # Disable 2FA
+POST /api/v1/2fa/verify-login           # Verify 2FA on login
+
+# User Operations (Protected)
+GET  /api/v1/user/profile               # Get profile
+PUT  /api/v1/user/profile               # Update profile
+GET  /api/v1/user/movies                # Browse movies
+GET  /api/v1/user/venues                # Browse theaters
+GET  /api/v1/user/shows                 # View shows
+GET  /api/v1/user/orders                # Order history
+GET  /api/v1/user/offers                # Get offers
+POST /api/v1/user/offers/:id/use        # Apply coupon
+
+# Admin Operations (Admin Only)
+GET    /api/v1/admin/dashboard/stats    # Dashboard
+POST   /api/v1/admin/movies             # Create movie
+PUT    /api/v1/admin/movies/:id         # Update movie
+DELETE /api/v1/admin/movies/:id         # Delete movie
+POST   /api/v1/admin/movies/bulk-delete # Bulk delete
+POST   /api/v1/admin/shows              # Create show
+PATCH  /api/v1/admin/shows/:id/cancel   # Cancel show
+POST   /api/v1/admin/venues             # Create venue
+PATCH  /api/v1/admin/users/:id/block    # Block user
+POST   /api/v1/admin/notifications/send-all  # Send notification
+```
+
+### Response Format
+
+**Success:**
+```json
+{
+  "statusCode": 200,
+  "data": { /* response data */ },
+  "message": "Success message",
+  "success": true
+}
+```
+
+**Error:**
+```json
+{
+  "statusCode": 400,
+  "data": null,
+  "message": "Error message",
+  "success": false,
+  "errors": []
+}
+```
 
 ---
 
 ## 🗄️ Database Models
 
-### User Model
-```javascript
-{
-  username: String,
-  email: String (unique),
-  password: String (hashed),
-  phone: String,
-  role: ["user", "admin"],
-  isBlocked: Boolean,
-  twoFactorSecret: String,
-  isTwoFactorEnabled: Boolean
-}
-```
+**10 Mongoose Schemas:**
 
-### Movie Model
 ```javascript
-{
-  title: String,
-  description: String,
-  genre: [String],
-  language: String,
-  duration: Number,
-  rating: Number,
-  releaseDate: Date,
-  cast: [String],
-  director: String,
-  poster: String,
-  trailer: String,
-  isActive: Boolean
-}
-```
-
-### Show Model
-```javascript
-{
-  movie: ObjectId (ref: Movie),
-  venue: ObjectId (ref: Venue),
-  showTime: Date,
-  price: Number,
-  totalSeats: Number,
-  availableSeats: Number,
-  bookedSeats: [String],
-  status: ["upcoming", "completed", "cancelled"]
-}
-```
-
-### Order Model
-```javascript
-{
-  user: ObjectId (ref: User),
-  movie: ObjectId (ref: Movie),
-  show: ObjectId (ref: Show),
-  theatre: ObjectId (ref: Venue),
-  seats: [{ seatNumber, row, price }],
-  totalAmount: Number,
-  paymentStatus: ["PENDING", "SUCCESS", "FAILED"],
-  bookingStatus: ["CONFIRMED", "CANCELLED"],
-  orderId: String (unique)
-}
+User: username, email, password, role, isBlocked, twoFactorSecret
+Movie: title, genre, language, duration, rating, cast, director, isActive
+Venue: name, city, address, screens, location, amenities
+Show: movie, venue, showTime, price, seats, bookedSeats, status
+Order: user, movie, show, seats, totalAmount, paymentStatus, orderId
+Offer: title, category, discountType, couponCode, validFrom, validTill
+Restaurant: name, city, cuisine, rating, offers
+OTT: title, platform, genre, rating, releaseYear
+Notification: title, message, targetAudience, sentAt
+OTP: email, otp, expiresAt, isVerified
 ```
 
 ---
 
-## 🎯 Key Features Explained
+## 🔒 Security
 
-### 🔐 Two-Factor Authentication (2FA)
-Users can enable 2FA for enhanced security. The system generates a QR code using Speakeasy that can be scanned with Google Authenticator or similar apps.
-
-### 🎁 Coupon System
-- **Percentage Discounts**: Get X% off
-- **Flat Discounts**: Get ₹X off
-- **Minimum Order Amount**: Coupon valid above certain amount
-- **Max Discount Cap**: Limit maximum discount
-- **Usage Tracking**: Track how many times a coupon is used
-
-### 📊 Admin Dashboard
-Real-time statistics including:
-- Total movies, venues, shows
-- Active shows count
-- Blocked users count
-- Revenue metrics
-
-### 📢 Notification System
-Admins can send targeted notifications:
-- To all users
-- To users who watched a specific movie
-- To users in a specific venue
-- Scheduled notifications
+- **bcrypt** password hashing with salt
+- **JWT** access & refresh tokens
+- **Rate limiting** on auth endpoints
+- **2FA** with email OTP
+- **OAuth 2.0** (Google, Facebook)
+- **Input validation** (Joi, express-validator)
+- **Role-based access control**
+- **Account lockout** after failed attempts
+- **Email verification** required
 
 ---
 
-## 🔒 Security Features
-
-- ✅ **Password Hashing**: bcrypt with salt rounds
-- ✅ **JWT Tokens**: Secure session management
-- ✅ **Rate Limiting**: Prevent brute force attacks
-- ✅ **Input Validation**: express-validator for all inputs
-- ✅ **CORS**: Configured for frontend integration
-- ✅ **Helmet**: Security headers
-- ✅ **2FA**: Optional two-factor authentication
-- ✅ **Role-Based Access**: Admin vs User permissions
-
 ---
 
-## 🧪 Testing the API
+## 🧪 Testing
 
-### Using Postman
+### Using Postman/Thunder Client
 
-1. **Import Collection**: Create a new collection in Postman
-2. **Set Base URL**: `http://localhost:5000/api/v1`
-3. **Test Authentication**:
+1. Import collection or test endpoints manually
+2. Set base URL: `http://localhost:5000/api/v1`
+3. **Auth Flow:**
    ```
-   POST /auth/signup
-   Body: {
-     "email": "test@example.com",
-     "password": "Test@123",
-     "username": "testuser"
-   }
+   POST /auth/send-otp        → Get OTP in email
+   POST /auth/signup          → Register with OTP
+   POST /auth/login           → Get JWT token
    ```
-4. **Get Token**: Copy the JWT token from login response
-5. **Test Protected Routes**: Add token to Authorization header
+4. **Protected Routes:** Add token to headers
    ```
-   Authorization: Bearer your_jwt_token_here
+   Authorization: Bearer your_jwt_token
    ```
+5. **Admin Routes:** Login as admin to test admin APIs
 
-### Sample API Calls
+### Create Admin User
 
-**Register User**:
-```bash
-curl -X POST http://localhost:5000/api/v1/auth/signup \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "john@example.com",
-    "password": "Secure@123",
-    "username": "johndoe"
-  }'
-```
-
-**Browse Movies**:
-```bash
-curl http://localhost:5000/api/v1/user/movies?genre=Action&language=English
+```javascript
+// Connect to MongoDB and run:
+db.users.updateOne(
+  { email: "admin@example.com" },
+  { $set: { role: "admin" } }
+)
 ```
 
 ---
 
-## 🚧 Roadmap
+## 🚀 Deployment
 
-### Current Features ✅
-- [x] Authentication & Authorization
-- [x] Movie, Venue, Show Management
-- [x] User Profile & Orders
-- [x] Offers & Coupons
-- [x] Restaurant & OTT Integration
-- [x] Admin Dashboard
-- [x] Notifications
+**Recommended Platforms:**
+- **Backend:** Render, Railway, Heroku
+- **Database:** MongoDB Atlas (free tier)
 
-### Upcoming Features 🚀
-- [ ] Payment Gateway Integration (Razorpay/Stripe)
-- [ ] Seat Selection UI
-- [ ] Real-time Seat Availability (WebSocket)
-- [ ] Email Tickets (PDF generation)
-- [ ] Review & Rating System
-- [ ] Recommendation Engine (AI-based)
-- [ ] Mobile App (React Native)
-- [ ] Multi-language Support
-- [ ] Analytics Dashboard
-- [ ] Refund Management
+**Pre-deployment:**
+- Set all environment variables
+- Update CORS origins
+- Change NODE_ENV to `production`
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Here's how you can help:
+Contributions welcome! 
 
-1. **Fork the Project**
-2. **Create Feature Branch** (`git checkout -b feature/AmazingFeature`)
-3. **Commit Changes** (`git commit -m 'Add some AmazingFeature'`)
-4. **Push to Branch** (`git push origin feature/AmazingFeature`)
-5. **Open Pull Request**
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/NewFeature`)
+3. Commit changes (`git commit -m 'Add NewFeature'`)
+4. Push to branch (`git push origin feature/NewFeature`)
+5. Open Pull Request
 
 ---
 
 ## 📝 License
 
-Distributed under the MIT License. See `LICENSE` file for more information.
+MIT License - see [LICENSE](LICENSE) file
 
 ---
 
 ## 👨‍💻 Author
 
-**Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
-- Email: your.email@example.com
+**GUFRAN KHAN**
+- GitHub: [@iGufrankhan](https://github.com/iGufrankhan)
+- LinkedIn: [Gufran Khan](https://linkedin.com/in/gufran-khan)
 
 ---
 
 ## 🙏 Acknowledgments
 
-- [Express.js](https://expressjs.com/)
-- [MongoDB](https://www.mongodb.com/)
-- [JWT](https://jwt.io/)
-- [Nodemailer](https://nodemailer.com/)
-- Inspired by [BookMyShow](https://bookmyshow.com)
-
----
-
-## 📞 Support
-
-If you have any questions or need help, feel free to:
-- Open an issue on GitHub
-- Email me at your.email@example.com
-- Connect on LinkedIn
+Built with: Express.js • MongoDB • JWT • Nodemailer  
+Inspired by: BookMyShow
 
 ---
 
@@ -497,6 +363,6 @@ If you have any questions or need help, feel free to:
 
 **⭐ Star this repo if you find it helpful!**
 
-Made with ❤️ by [GUFRAN KHAN]
+Made with ❤️ for backend developers
 
 </div>
