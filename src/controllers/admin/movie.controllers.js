@@ -3,9 +3,6 @@ import {asyncHandler} from "../../../utils/AsyncHandler.js";
 import {Movie} from "../../models/movie.models.js";
 import {ApiResponse} from "../../../utils/ApiResponse.js";
 
-
-
-
 // create movie
 export const createMovie = asyncHandler(async (req, res) => {
     const {
@@ -24,10 +21,7 @@ export const createMovie = asyncHandler(async (req, res) => {
         trailerUrl,
         rating,
         reviewCount
-
     } = req.body;
-
-
 
     const movie = await Movie.create({
         title,
@@ -45,11 +39,11 @@ export const createMovie = asyncHandler(async (req, res) => {
         trailerUrl,
         rating,
         reviewCount,
-        createdBy: req.admin._id,
+        createdBy: req.user._id, 
         status: "active",
     });
 
-    return res.status(201).json(new ApiResponse(true, "Movie created successfully", movie));
+    return res.status(201).json(new ApiResponse(201, "Movie created successfully", movie));
 });
 
 

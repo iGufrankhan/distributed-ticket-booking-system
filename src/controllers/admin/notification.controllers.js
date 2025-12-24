@@ -15,11 +15,10 @@ export const sendNotificationToAll = asyncHandler(async (req, res) => {
         message,
         targetType: "ALL",
         status: "sent",
-        createdBy: req.admin._id,
+        createdBy: req.user._id,
     });
 
     // Logic to send notification to all users
-    // This can be integrated with a notification service or email service
     const totalUsers = await User.countDocuments();
 
     res.status(200).json({ 
@@ -30,7 +29,7 @@ export const sendNotificationToAll = asyncHandler(async (req, res) => {
 });
 
 // send notification to users of a specific movie
-export const sendNotificationByMovie = asyncHandler(async (req, res) => {
+export const sendNotificationToMovieWatchers = asyncHandler(async (req, res) => { // ✅ Renamed
     const { movieId } = req.params;
     const { title, message } = req.body;
 
@@ -45,7 +44,7 @@ export const sendNotificationByMovie = asyncHandler(async (req, res) => {
         targetType: "MOVIE",
         targetId: movieId,
         status: "sent",
-        createdBy: req.admin._id,
+        createdBy: req.user._id,
     });
 
     res.status(200).json({ 
@@ -56,7 +55,7 @@ export const sendNotificationByMovie = asyncHandler(async (req, res) => {
 });
 
 // send notification to users of a specific venue
-export const sendNotificationByVenue = asyncHandler(async (req, res) => {
+export const sendNotificationToVenueFollowers = asyncHandler(async (req, res) => { // ✅ Renamed
     const { venueId } = req.params;
     const { title, message } = req.body;
 
@@ -71,7 +70,7 @@ export const sendNotificationByVenue = asyncHandler(async (req, res) => {
         targetType: "VENUE",
         targetId: venueId,
         status: "sent",
-        createdBy: req.admin._id,
+        createdBy: req.user._id, 
     });
 
     res.status(200).json({ 
@@ -82,7 +81,7 @@ export const sendNotificationByVenue = asyncHandler(async (req, res) => {
 });
 
 // send notification about a new show
-export const notifyUsersAboutNewShow = asyncHandler(async (req, res) => {
+export const sendNotificationToShowAttendees = asyncHandler(async (req, res) => { // ✅ Renamed
     const { showId } = req.params;
     const show = await Show.findById(showId).populate('movie').populate('venue');
 
@@ -95,7 +94,7 @@ export const notifyUsersAboutNewShow = asyncHandler(async (req, res) => {
         message: `${show.movie.title} at ${show.venue.name} on ${new Date(show.showDateTime).toLocaleString()}`,
         targetType: "ALL",
         status: "sent",
-        createdBy: req.admin._id,
+        createdBy: req.user._id, // ✅ Changed from req.admin
     });
 
     res.status(200).json({ 
@@ -116,7 +115,7 @@ export const scheduleNotification = asyncHandler(async (req, res) => {
         targetId,
         status: "scheduled",
         scheduledFor: new Date(scheduledFor),
-        createdBy: req.admin._id,
+        createdBy: req.user._id, // ✅ Changed from req.admin
     });
 
     res.status(201).json({ 
@@ -129,7 +128,7 @@ export const scheduleNotification = asyncHandler(async (req, res) => {
 // get all notifications
 export const getAllNotifications = asyncHandler(async (req, res) => {
     const notifications = await Notification.find()
-        .populate('createdBy', 'name email')
+        .populate('createdBy', 'fullName email')
         .sort({ createdAt: -1 });
 
     res.status(200).json({ 
