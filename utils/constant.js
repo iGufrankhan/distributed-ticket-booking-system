@@ -15,3 +15,10 @@ export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 export const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 export const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+
+// Redis Configuration
+export const REDIS_HOST = process.env.REDIS_HOST || "localhost";
+export const REDIS_PORT = parseInt(process.env.REDIS_PORT) || 6379;
+export const REDIS_USERNAME = process.env.REDIS_USERNAME || "default";
+export const REDIS_PASSWORD = process.env.REDIS_PASSWORD || undefined;
+export const REDIS_DB = parseInt(process.env.REDIS_DB) || 0;

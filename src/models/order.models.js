@@ -51,11 +51,14 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: ["UPI", "CARD", "NETBANKING", "WALLET"]
     },
+    paymentID: {
+      type: String
+    },
 
     bookingStatus: {
       type: String,
-      enum: ["CONFIRMED", "CANCELLED"],
-      default: "CONFIRMED"
+      enum: ["CONFIRMED", "CANCELLED", "PENDING"],
+      default: "PENDING"
     },
 
     bookingTime: {
