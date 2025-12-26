@@ -1,14 +1,14 @@
-import { createClient } from 'redis';
+import Redis from 'ioredis';
 import { REDIS_HOST, REDIS_PORT, REDIS_USERNAME, REDIS_PASSWORD } from '../../utils/constant.js';
 
-export const client = createClient({
+export const client = new Redis({
+    host: REDIS_HOST,
+    port: REDIS_PORT,
     username: REDIS_USERNAME,
     password: REDIS_PASSWORD,
-    socket: {
-        host: REDIS_HOST,
-        port: REDIS_PORT,
-        connectTimeout: 10000
-    }
+    maxRetriesPerRequest: null,
+    enableReadyCheck: true,
+    connectTimeout: 10000,
 });
 
 client.on('error', (err) => {
@@ -22,9 +22,3 @@ client.on('connect', () => {
 client.on('ready', () => {
     console.log('✅ Redis ready to accept commands');
 });
-
-client.connect()
-    .then(() => console.log('✅ Redis connection established'))
-    .catch((err) => {
-        console.error('❌ Failed to connect to Redis:', err.message);
-    });
