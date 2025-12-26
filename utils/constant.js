@@ -22,7 +22,5 @@ export const REDIS_PORT = parseInt(process.env.REDIS_PORT) || 6379;
 export const REDIS_USERNAME = process.env.REDIS_USERNAME || "default";
 export const REDIS_PASSWORD = process.env.REDIS_PASSWORD || undefined;
 export const REDIS_DB = parseInt(process.env.REDIS_DB) || 0;
-
-
-export const SEAT_LOCK_EXPIRY = process.env.SEAT_LOCK_EXPIRY ||5; // in minutes
-export const PAYMENT_TIMEOUT = process.env.PAYMENT_TIMEOUT || 3; // in minutes
+export const SEAT_LOCK_EXPIRY = parseInt(process.env.SEAT_LOCK_EXPIRY) || 5;
+export const PAYMENT_TIMEOUT = parseInt(process.env.PAYMENT_TIMEOUT) || 3;

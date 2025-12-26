@@ -55,4 +55,12 @@ const showSchema = new mongoose.Schema(
   { timestamps: true, minimize: false }
 );
 
+showSchema.methods.isSeatAvailable = function(seatNumber) {
+  return !this.occupiedSeats[seatNumber];
+};
+
+showSchema.methods.areSeatsAvailable = function(seatNumbers) {
+  return seatNumbers.every(seat => !this.occupiedSeats[seat]);
+};
+
 export const Show = mongoose.model("Show", showSchema);
