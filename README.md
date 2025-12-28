@@ -1,6 +1,6 @@
 # 🎬 Distributed Ticket Booking System
 
-A scalable movie ticket booking API with Redis-based seat locking, payment queues, and real-time concurrency handling.
+A movie ticket booking API with Redis seat locking, payment queues, and concurrent booking handling.
 
 [![Node.js](https://img.shields.io/badge/Node.js-v22.17.1-green)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-5.x-blue)](https://expressjs.com/)
@@ -11,18 +11,28 @@ A scalable movie ticket booking API with Redis-based seat locking, payment queue
 
 ## 📖 About
 
-A production-ready ticket booking backend handling concurrent bookings, payment timeouts, and distributed locks. Built to understand how real booking systems prevent double-booking and handle failures.
+Backend for ticket bookings with seat locking, payment processing, and auto-cancellation. Prevents double-booking using Redis and handles payment timeouts with Bull queues.
 
 ---
 
 ## ✨ Features
 
-- **Seat Locking**: Redis prevents race conditions
-- **Auto-Cancellation**: BullMQ releases seats after timeout
-- **OAuth Login**: Google & GitHub authentication
-- **2FA**: Email OTP + TOTP support
-- **Queue Monitoring**: Admin dashboard for failed jobs
-- **Email Notifications**: Booking confirmations
+**Phase 1: Authentication**
+- Email/Password login with JWT
+- OAuth (Google & GitHub)
+- 2FA (Email OTP + TOTP)
+- Password reset flow
+
+**Phase 2: Admin System**
+- Movie & theater management
+- Show scheduling
+- Role-based access control
+
+**Phase 3: Smart Booking**
+- Redis seat locks (5 min timeout)
+- Background payment processing
+- Auto-cancellation on timeout
+- Queue monitoring dashboard
 
 ---
 
@@ -45,60 +55,13 @@ Email:      Nodemailer
 git clone https://github.com/iGufrankhan/distributed-ticket-booking-system.git
 cd distributed-ticket-booking-system
 npm install
-cp .env.example .env
-# Edit .env with your credentials
-npm start
+cp [.env.example](http://_vscodecontentref_/0) .env
+# Add your MongoDB, Redis credentials
+npm start          # API server
+npm run worker     # Payment worker
 ```
 
 ---
-
-## 🔑 Environment Setup
-
-Create `.env` file:
-
-```env
-# Server
-PORT=5000
-
-# MongoDB
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/ticket_booking
-
-# JWT
-JWT_SECRET=your_jwt_secret_key
-
-# Gmail (for OTP)
-GMAIL_USER=your_email@gmail.com
-GMAIL_APP_PASSWORD=your_gmail_app_password
-
-# OAuth
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-GITHUB_CLIENT_ID=your_github_client_id
-GITHUB_CLIENT_SECRET=your_github_client_secret
-
-# Redis
-REDIS_HOST=your_redis_host
-REDIS_PORT=6379
-REDIS_USERNAME=default
-REDIS_PASSWORD=your_redis_password
-REDIS_DB=0
-
-# Booking Settings
-SEAT_LOCK_EXPIRY=5
-PAYMENT_TIMEOUT=3
-```
-
----
-
-## 📚 API Documentation
-
-### Authentication
-```bash
-POST /api/v1/auth/send-otp       # Send OTP
-POST /api/v1/auth/register       # Signup
-POST /api/v1/auth/login          # Login
-GET  /api/v1/auth/google         # Google OAuth
-```
 
 ### Booking
 ```bash
@@ -140,14 +103,11 @@ Full docs: [USERWORK.MD](USERWORK.MD) | [ADMINWORK.MD](ADMINWORK.MD)
 
 ```
 src/
-├── Config/          # DB, Redis
-├── controllers/     # Route handlers
-├── models/          # Mongoose schemas
-├── services/
-│   ├── booking/    # Seat locks, payments
-│   └── queue/      # BullMQ workers
-├── routes/         # API routes
-└── middlewares/    # Auth, validation
+├── controllers/    # Route logic
+├── models/         # MongoDB schemas
+├── services/       # Seat locks, queue
+├── workers/        # Payment processor
+└── routes/         # API routes
 ```
 
 ---
