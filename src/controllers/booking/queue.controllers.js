@@ -252,7 +252,7 @@ export const getJobById = asyncHandler(async (req, res) => {
   );
 });
 
-// Empty the entire queue (DANGEROUS - use with caution)
+
 export const emptyQueue = asyncHandler(async (req, res) => {
   await paymentQueue.empty();
 
@@ -261,7 +261,8 @@ export const emptyQueue = asyncHandler(async (req, res) => {
   );
 });
 
-// Get queue health status
+
+
 export const getQueueHealth = asyncHandler(async (req, res) => {
   const [waiting, active, failed, delayed] = await Promise.all([
     paymentQueue.getWaitingCount(),
