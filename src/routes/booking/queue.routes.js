@@ -1,18 +1,16 @@
 import { Router } from "express";
 import {
-  createMovie,
+  deleteMovie,
   getAllMovies,
   getMovieById,
+  registerMovie,
   updateMovie,
-  deleteMovie
-} from "../../controllers/admin/movie.controllers.js";
-import {
-  createVenue,
-  getAllVenues,
-  getVenueById,
-  updateVenue,
-  deleteVenue
-} from "../../controllers/admin/venue.controllers.js";
+  getAllTheaters,
+  getTheaterById,
+  registerTheater,
+  updateTheater,
+  deleteTheater,
+} from "../controllers/admin/admin.controllers.js";
 import {
   getQueueStats,
   getFailedJobs,
@@ -28,27 +26,28 @@ import {
   getJobById,
   emptyQueue,
   getQueueHealth
-} from "../../controllers/booking/queue.controllers.js";
-import { verifyJWT } from "../../middlewares/auth/auth.middlewares.js";
+} from "../controllers/admin/queue.controller.js";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { isAdmin } from "../middlewares/role.middleware.js";
 
 const router = Router();
 
 // All admin routes require authentication and admin role
-router.use(verifyJWT);
+router.use(verifyJWT, isAdmin);
 
 // Movie routes
-router.post("/movies", createMovie);
+router.post("/movies", registerMovie);
 router.get("/movies", getAllMovies);
 router.get("/movies/:id", getMovieById);
 router.patch("/movies/:id", updateMovie);
 router.delete("/movies/:id", deleteMovie);
 
-// Venue routes
-router.post("/venues", createVenue);
-router.get("/venues", getAllVenues);
-router.get("/venues/:id", getVenueById);
-router.patch("/venues/:id", updateVenue);
-router.delete("/venues/:id", deleteVenue);
+// Theater routes
+router.post("/theaters", registerTheater);
+router.get("/theaters", getAllTheaters);
+router.get("/theaters/:id", getTheaterById);
+router.patch("/theaters/:id", updateTheater);
+router.delete("/theaters/:id", deleteTheater);
 
 // Queue monitoring routes
 router.get("/queue/stats", getQueueStats);
@@ -66,8 +65,6 @@ router.delete("/queue/job/:jobId", removeJob);
 router.post("/queue/clean", cleanQueue);
 router.post("/queue/pause", pauseQueue);
 router.post("/queue/resume", resumeQueue);
-router.delete("/queue/empty", emptyQueue);
+router.delete("/queue/empty", emptyQueue); // DANGEROUS
 
 export default router;
-
-

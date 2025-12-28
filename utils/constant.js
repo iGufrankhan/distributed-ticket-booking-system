@@ -22,5 +22,14 @@ export const REDIS_PORT = parseInt(process.env.REDIS_PORT) || 6379;
 export const REDIS_USERNAME = process.env.REDIS_USERNAME || "default";
 export const REDIS_PASSWORD = process.env.REDIS_PASSWORD || undefined;
 export const REDIS_DB = parseInt(process.env.REDIS_DB) || 0;
-export const SEAT_LOCK_EXPIRY = parseInt(process.env.SEAT_LOCK_EXPIRY) || 5;
-export const PAYMENT_TIMEOUT = parseInt(process.env.PAYMENT_TIMEOUT) || 3;
+
+// Database Configuration
+export const DB_NAME = "distributed_booking";
+export const DEFAULT_PAGE = 1;
+export const DEFAULT_LIMIT = 10;
+export const MAX_LIMIT = 100;
+
+// Booking & Seat Lock Configuration
+export const SEAT_LOCK_EXPIRY = parseInt(process.env.SEAT_LOCK_EXPIRY) || 15; // minutes
+export const PAYMENT_TIMEOUT = parseInt(process.env.PAYMENT_TIMEOUT) || 15 * 60 * 1000; // 15 minutes in milliseconds
+export const MAX_SEATS_PER_BOOKING = parseInt(process.env.MAX_SEATS_PER_BOOKING) || 10;

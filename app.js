@@ -34,11 +34,7 @@ app.use("/api/v1/auth", outhRoutes);
 app.use("/api/v1/auth", resetPasswordRoutes);  
 app.use("/api/v1/2fa", twoFactorRoutes);       
 app.use("/api/v1/admin", adminRoutes);         
-app.use("/api/v1/user", userworkRoutes);    
-
-app.use("/api/v1/booking", bookingRoutes);         
-
-
-
+app.use("/api/v1/user", userworkRoutes);       
+app.use("/api/v1/bookings", bookingRoutes);  
 
 export default app;
