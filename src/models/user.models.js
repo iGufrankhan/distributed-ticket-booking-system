@@ -93,8 +93,10 @@ twoFactorEnabled: {
       trim: true,
     },
     
-
-
+    newsletterSubscribed: {
+      type: Boolean,
+      default: false
+    }
 
    
   },

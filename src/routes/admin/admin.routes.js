@@ -29,7 +29,16 @@ import {
   emptyQueue,
   getQueueHealth
 } from "../../controllers/booking/queue.controllers.js";
+import {
+  sendNotificationToAll,
+  sendNotificationToMovieWatchers,
+  sendNotificationToVenueFollowers,
+  sendNotificationToShowAttendees,
+  scheduleNotification,
+  getAllNotifications
+} from "../../controllers/admin/notification.controllers.js";
 import { verifyJWT } from "../../middlewares/auth/auth.middlewares.js";
+import { sendNewsletterHandler } from "../../controllers/admin/newsletter.controllers.js";
 
 const router = Router();
 
@@ -67,6 +76,17 @@ router.post("/queue/clean", cleanQueue);
 router.post("/queue/pause", pauseQueue);
 router.post("/queue/resume", resumeQueue);
 router.delete("/queue/empty", emptyQueue);
+
+// Notification routes
+router.post("/notifications/all", sendNotificationToAll);
+router.post("/notifications/movie/:movieId", sendNotificationToMovieWatchers);
+router.post("/notifications/venue/:venueId", sendNotificationToVenueFollowers);
+router.post("/notifications/show/:showId", sendNotificationToShowAttendees);
+router.post("/notifications/schedule", scheduleNotification);
+router.get("/notifications", getAllNotifications);
+
+// Newsletter routes
+router.post("/newsletter/send", sendNewsletterHandler);
 
 export default router;
 

@@ -1,163 +1,96 @@
-# 🎬 Distributed Ticket Booking System
+# 🎟️ Distributed Ticket Booking System
 
-A movie ticket booking API with Redis seat locking, payment queues, and concurrent booking handling.
-
-[![Node.js](https://img.shields.io/badge/Node.js-v22.17.1-green)](https://nodejs.org/)
-[![Express](https://img.shields.io/badge/Express-5.x-blue)](https://expressjs.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-brightgreen)](https://www.mongodb.com/)
-[![Redis](https://img.shields.io/badge/Redis-Queue-red)](https://redis.io/)
+A modern backend API for movie ticket booking with real-time seat locking, payment processing, and admin management. Built for reliability, speed, and a great developer experience.
 
 ---
 
-## 📖 About
-
-Backend for ticket bookings with seat locking, payment processing, and auto-cancellation. Prevents double-booking using Redis and handles payment timeouts with Bull queues.
-
----
-
-## ✨ Features
-
-**Phase 1: Authentication**
-- Email/Password login with JWT
-- OAuth (Google & GitHub)
-- 2FA (Email OTP + TOTP)
-- Password reset flow
-
-**Phase 2: Admin System**
-- Movie & theater management
-- Show scheduling
-- Role-based access control
-
-**Phase 3: Smart Booking**
-- Redis seat locks (5 min timeout)
-- Background payment processing
-- Auto-cancellation on timeout
-- Queue monitoring dashboard
+## 🚀 Features
+- Secure user auth (JWT, OAuth, 2FA)
+- Admin panel for movies, venues, shows
+- Smart seat locking (Redis, 5 min hold)
+- Async payment queue (BullMQ)
+- Auto-cancel on payment timeout
+- Email notifications (booking, payment, newsletter)
+- Newsletter subscription for users
+- Powerful search & filter for shows
+- Robust queue monitoring for admins
 
 ---
 
 ## 🛠️ Tech Stack
-
-```
-Backend:    Node.js, Express
-Database:   MongoDB Atlas
-Cache:      Redis, ioredis
-Queue:      BullMQ
-Auth:       JWT, OAuth 2.0, Speakeasy
-Email:      Nodemailer
-```
+- **Node.js** + **Express**
+- **MongoDB Atlas** (Mongoose)
+- **Redis** (ioredis)
+- **BullMQ** (queues)
+- **Nodemailer** (email)
 
 ---
 
-## ⚙️ Quick Start
-
+## ⚡ Quick Start
 ```bash
-git clone https://github.com/iGufrankhan/distributed-ticket-booking-system.git
-cd distributed-ticket-booking-system
+# 1. Clone & install
 npm install
-cp [.env.example](http://_vscodecontentref_/0) .env
-# Add your MongoDB, Redis credentials
-npm start          # API server
-npm run worker     # Payment worker
+
+# 2. Configure env
+cp .env.example .env
+# Add your MongoDB & Redis credentials
+
+# 3. Start servers
+npm start         # API server
+npm run worker    # Payment worker
 ```
 
 ---
 
-### Booking
-```bash
-GET  /api/v1/booking/seats/:showId          # Available seats
-POST /api/v1/booking/book                   # Lock seats
-POST /api/v1/booking/confirm/:bookingId     # Confirm payment
-POST /api/v1/booking/cancel/:bookingId      # Cancel booking
-GET  /api/v1/booking/status/:bookingId      # Check status
-```
+## 📚 API Highlights
+- **/api/v1/auth/** — Register, login, 2FA, OAuth
+- **/api/v1/booking/** — Book, confirm, cancel, status
+- **/api/v1/admin/** — Movies, venues, shows, queue, notifications
+- **/api/v1/newsletter/** — Subscribe/unsubscribe
 
-### Admin
-```bash
-POST   /api/v1/admin/movies        # Create movie
-POST   /api/v1/admin/shows         # Create show
-GET    /api/v1/queue/stats         # Queue monitoring
-POST   /api/v1/queue/retry/:jobId  # Retry failed job
-```
-
-Full docs: [USERWORK.MD](USERWORK.MD) | [ADMINWORK.MD](ADMINWORK.MD)
+Full usage: [USERWORK.MD](USERWORK.MD) | [ADMINWORK.MD](ADMINWORK.MD)
 
 ---
 
-## 🔒 How It Works
-
-**Booking Flow:**
-1. User selects seats → Redis locks for 5 min
-2. Payment initiated → BullMQ job created
-3. Payment success → Seats confirmed
-4. Timeout → Auto-cancel, unlock seats
-
-**Queue System:**
-- Workers monitor payments
-- Auto-retry failed jobs (3 attempts)
-- Admin can manually retry/clear
+## 🧩 How It Works
+1. **User books seats** → Redis locks seats for 5 min
+2. **Payment starts** → Job added to queue
+3. **Worker processes payment**
+   - Success: seats confirmed, email sent
+   - Timeout/fail: seats auto-released, user notified
+4. **Admin** can monitor & retry jobs, send notifications/newsletters
 
 ---
 
-## 📁 Structure
-
+## 🗂️ Project Structure
 ```
 src/
-├── controllers/    # Route logic
-├── models/         # MongoDB schemas
-├── services/       # Seat locks, queue
-├── workers/        # Payment processor
-└── routes/         # API routes
+  controllers/   # API logic
+  models/        # Schemas
+  services/      # Core logic (locks, queue, email)
+  workers/       # Payment processor
+  routes/        # API routes
 ```
 
 ---
 
-## 🧪 Testing
-
-Create admin user:
-```javascript
-db.users.updateOne(
-  { email: "admin@example.com" },
-  { $set: { role: "admin" } }
-)
-```
-
-Test booking:
-```bash
-POST /api/v1/auth/login
-POST /api/v1/booking/book
-GET  /api/v1/booking/status/:id
-```
+## 📝 Testing
+- Create admin: update user role in DB
+- Test booking: login → book → confirm/cancel
 
 ---
 
-## 🚀 Deployment
-
-**Redis**: Redis Cloud (free tier)  
-**MongoDB**: Atlas M0 cluster  
-**Backend**: Render/Railway
-
-⚠️ Set Redis eviction policy to `noeviction`
+## 🌐 Deployment
+- **MongoDB**: Atlas (free tier)
+- **Redis**: Redis Cloud
+- **Backend**: Render, Railway, or your VPS
 
 ---
 
-## 🤝 Contributing
-
-PRs welcome! Fork → Branch → Commit → Push → PR
-
----
-
-## 📝 License
-
-MIT License
+## 👤 Author
+[Gufran Khan](https://github.com/iGufrankhan)  
+[LinkedIn](https://linkedin.com/in/gufran-khan)
 
 ---
 
-## 👨‍💻 Author
-
-**Gufran Khan**  
-[GitHub](https://github.com/iGufrankhan) • [LinkedIn](https://linkedin.com/in/gufran-khan)
-
----
-
-⭐ Star if you learned something!
+> ⭐ If you like this project, give it a star!

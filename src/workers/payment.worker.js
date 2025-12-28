@@ -6,6 +6,7 @@ import { Show } from "../models/show.models.js";
 import { client } from "../Config/redisConfig.js";
 import { releaseSeats } from "../services/booking/seatlock.service.js";
 import mongoose from "mongoose";
+import { sendBookingConfirmationEmail, sendPaymentFailedEmail } from "../services/booking/notification.service.js"; 
 
 // Process payment job
 paymentQueue.process('process-payment', async (job) => {
@@ -23,6 +24,7 @@ paymentQueue.process('process-payment', async (job) => {
       payment.failureReason = 'Payment timeout';
       await payment.save();
       await releaseSeats(showId, seats);
+      await sendPaymentFailedEmail(payment.userEmail, paymentId); // <-- Send failure email
       throw new Error('Payment timeout');
     }
 
@@ -32,6 +34,7 @@ paymentQueue.process('process-payment', async (job) => {
     const isPaymentSuccessful = Math.random() > 0.1; // 90% success rate for simulation
 
     if (!isPaymentSuccessful) {
+      await sendPaymentFailedEmail(payment.userEmail, paymentId); // <-- Send failure email
       throw new Error('Payment gateway error');
     }
 
@@ -71,12 +74,27 @@ paymentQueue.process('process-payment', async (job) => {
     // Clear cache
     await client.del(`show:${showId}:seats`);
 
+    // Send booking confirmation email
+    await sendBookingConfirmationEmail({
+      _id: booking._id,
+      userEmail: payment.userEmail,
+    });
+
     console.log(`✅ Payment processed successfully for booking: ${booking.bookingCode}`);
     return { success: true, bookingId: booking._id };
 
   } catch (error) {
     console.error(`❌ Payment processing failed:`, error.message);
     await handlePaymentFailure(paymentId, showId, seats, error.message);
+    // Send payment failed email if not already sent
+    try {
+      const payment = await Payment.findById(paymentId);
+      if (payment && payment.userEmail) {
+        await sendPaymentFailedEmail(payment.userEmail, paymentId);
+      }
+    } catch (e) {
+      console.error("Error sending payment failed email:", e.message);
+    }
     throw error;
   }
 });
@@ -101,6 +119,10 @@ paymentQueue.process('check-payment-timeout', async (job) => {
     if (new Date() > payment.expiresAt) {
       console.log(`⏱️ Payment timeout for ${paymentId}`);
       await handlePaymentFailure(paymentId, showId, seats, 'Payment timeout');
+      // Send payment failed email
+      if (payment.userEmail) {
+        await sendPaymentFailedEmail(payment.userEmail, paymentId);
+      }
     }
   } catch (error) {
     console.error('Error checking payment timeout:', error);
