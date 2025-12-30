@@ -1,39 +1,51 @@
-# 🎟️ Distributed Ticket Booking System
+# 🎬✨ Distributed Ticket Booking System
 
-A modern backend API for movie ticket booking with real-time seat locking, payment processing, and admin management. Built for reliability, speed, and a great developer experience.
+![Node.js](https://img.shields.io/badge/Node.js-v22.17.1-green)
+![Express](https://img.shields.io/badge/Express-5.x-blue)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-brightgreen)
+![Redis](https://img.shields.io/badge/Redis-Queue-red)
+
+---
+
+A modern, production-ready backend API for movie ticket booking. Enjoy real-time seat locking, async payment processing, admin dashboards, and user notifications—all built for reliability, scalability, and a great developer experience.
 
 ---
 
 ## 🚀 Features
-- Secure user auth (JWT, OAuth, 2FA)
-- Admin panel for movies, venues, shows
-- Smart seat locking (Redis, 5 min hold)
-- Async payment queue (BullMQ)
-- Auto-cancel on payment timeout
-- Email notifications (booking, payment, newsletter)
-- Newsletter subscription for users
-- Powerful search & filter for shows
-- Robust queue monitoring for admins
+
+- 🔐 Secure user authentication (JWT, OAuth, 2FA)
+- 🎬 Admin management for movies, venues, and shows
+- 🪑 Real-time seat locking with Redis (no double-booking!)
+- 💸 Async payment processing with BullMQ
+- ⏰ Auto-cancel & seat release on payment timeout
+- 📧 Email notifications (booking, payment, newsletters)
+- 📰 Newsletter subscription & delivery
+- 🔎 Powerful search & filter for shows
+- 🛠️ Admin queue monitoring & notification tools
 
 ---
 
 ## 🛠️ Tech Stack
-- **Node.js** + **Express**
+
+- **Node.js** & **Express**
 - **MongoDB Atlas** (Mongoose)
 - **Redis** (ioredis)
-- **BullMQ** (queues)
+- **BullMQ** (job queues)
 - **Nodemailer** (email)
 
 ---
 
 ## ⚡ Quick Start
+
 ```bash
-# 1. Clone & install
+# 1. Clone & install dependencies
+git clone https://github.com/yourusername/distributed-ticket-booking-system.git
+cd distributed-ticket-booking-system
 npm install
 
-# 2. Configure env
+# 2. Configure environment variables
 cp .env.example .env
-# Add your MongoDB & Redis credentials
+# Fill in your MongoDB, Redis, and email credentials
 
 # 3. Start servers
 npm start         # API server
@@ -48,21 +60,26 @@ npm run worker    # Payment worker
 - **/api/v1/admin/** — Movies, venues, shows, queue, notifications
 - **/api/v1/newsletter/** — Subscribe/unsubscribe
 
-Full usage: [USERWORK.MD](USERWORK.MD) | [ADMINWORK.MD](ADMINWORK.MD)
+See [USERWORK.MD](USERWORK.MD) and [ADMINWORK.MD](ADMINWORK.MD) for full API usage.
 
 ---
 
 ## 🧩 How It Works
-1. **User books seats** → Redis locks seats for 5 min
-2. **Payment starts** → Job added to queue
-3. **Worker processes payment**
-   - Success: seats confirmed, email sent
-   - Timeout/fail: seats auto-released, user notified
-4. **Admin** can monitor & retry jobs, send notifications/newsletters
+
+```mermaid
+flowchart TD
+    A[User books seats] --> B[Redis locks seats (5 min)]
+    B --> C[Payment job queued]
+    C --> D[Worker processes payment]
+    D -->|Success| E[Seats confirmed, user emailed]
+    D -->|Timeout/Fail| F[Seats auto-released, user notified]
+    E & F --> G[Admin can monitor/retry jobs, send notifications/newsletters]
+```
 
 ---
 
 ## 🗂️ Project Structure
+
 ```
 src/
   controllers/   # API logic
@@ -75,14 +92,14 @@ src/
 ---
 
 ## 📝 Testing
-- Create admin: update user role in DB
+- Create admin: update user role in MongoDB
 - Test booking: login → book → confirm/cancel
 
 ---
 
 ## 🌐 Deployment
 - **MongoDB**: Atlas (free tier)
-- **Redis**: Redis Cloud
+- **Redis**: Redis Cloud (free)
 - **Backend**: Render, Railway, or your VPS
 
 ---
@@ -93,4 +110,4 @@ src/
 
 ---
 
-> ⭐ If you like this project, give it a star!
+> ⭐ **Star this repo if you found it helpful!**
