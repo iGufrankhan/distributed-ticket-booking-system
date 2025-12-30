@@ -1,27 +1,27 @@
-# Admin System Documentation
+# 🛠️ Admin System Documentation
 
 ## 🔐 Authentication
-**Admin Login:**
+**Admin Login**
 ```
 POST /api/v1/auth/login
 Body: { "email": "admin@example.com", "password": "password" }
 ```
-**Note:** User must have `role: "admin"` in database.
+> **Note:** User must have `role: "admin"` in the database.
 
 ---
 
 ## 🎬 Movie Management
 
-| Action | Method | Endpoint |
-|--------|--------|----------|
-| Create | POST | `/api/v1/admin/movies` |
-| Get All (Filter) | GET | `/api/v1/admin/movies?search=avengers&genre=action&isActive=true` |
-| Update | PUT | `/api/v1/admin/movies/:movieId` |
-| Toggle Status | PATCH | `/api/v1/admin/movies/:movieId/toggle` |
-| Delete | DELETE | `/api/v1/admin/movies/:movieId` |
-| Bulk Delete | POST | `/api/v1/admin/movies/bulk-delete` |
+| Action        | Method | Endpoint                                         |
+|---------------|--------|--------------------------------------------------|
+| Create        | POST   | `/api/v1/admin/movies`                           |
+| Get All       | GET    | `/api/v1/admin/movies?search=avengers&genre=action&isActive=true` |
+| Update        | PUT    | `/api/v1/admin/movies/:movieId`                  |
+| Toggle Status | PATCH  | `/api/v1/admin/movies/:movieId/toggle`           |
+| Delete        | DELETE | `/api/v1/admin/movies/:movieId`                  |
+| Bulk Delete   | POST   | `/api/v1/admin/movies/bulk-delete`               |
 
-**Create Movie Body:**
+**Sample Create Movie Body**
 ```json
 {
   "title": "Avengers",
@@ -36,17 +36,17 @@ Body: { "email": "admin@example.com", "password": "password" }
 
 ## 🏢 Venue Management
 
-| Action | Method | Endpoint |
-|--------|--------|----------|
-| Create | POST | `/api/v1/admin/venues` |
-| Get All | GET | `/api/v1/admin/venues` |
-| Get by ID | GET | `/api/v1/admin/venues/:venueId` |
-| Update | PUT | `/api/v1/admin/venues/:venueId` |
-| Toggle Status | PATCH | `/api/v1/admin/venues/:venueId/toggle` |
-| Delete | DELETE | `/api/v1/admin/venues/:venueId` |
-| Bulk Toggle | POST | `/api/v1/admin/venues/bulk-toggle` |
+| Action        | Method | Endpoint                                         |
+|---------------|--------|--------------------------------------------------|
+| Create        | POST   | `/api/v1/admin/venues`                           |
+| Get All       | GET    | `/api/v1/admin/venues`                           |
+| Get by ID     | GET    | `/api/v1/admin/venues/:venueId`                  |
+| Update        | PUT    | `/api/v1/admin/venues/:venueId`                  |
+| Toggle Status | PATCH  | `/api/v1/admin/venues/:venueId/toggle`           |
+| Delete        | DELETE | `/api/v1/admin/venues/:venueId`                  |
+| Bulk Toggle   | POST   | `/api/v1/admin/venues/bulk-toggle`               |
 
-**Create Venue Body:**
+**Sample Create Venue Body**
 ```json
 {
   "name": "PVR Cinemas",
@@ -61,17 +61,17 @@ Body: { "email": "admin@example.com", "password": "password" }
 
 ## 🎥 Show Management
 
-| Action | Method | Endpoint |
-|--------|--------|----------|
-| Create | POST | `/api/v1/admin/shows` |
-| Get Now Playing (Filter) | GET | `/api/v1/admin/shows/now-playing?movie=id&venue=id&date=2025-12-20` |
-| Update | PUT | `/api/v1/admin/shows/:showId` |
-| Cancel | PATCH | `/api/v1/admin/shows/:showId/cancel` |
-| Complete | PATCH | `/api/v1/admin/shows/:showId/complete` |
-| Delete | DELETE | `/api/v1/admin/shows/:showId` |
-| Bulk Cancel | POST | `/api/v1/admin/shows/bulk-cancel` |
+| Action        | Method | Endpoint                                         |
+|---------------|--------|--------------------------------------------------|
+| Create        | POST   | `/api/v1/admin/shows`                            |
+| Now Playing   | GET    | `/api/v1/admin/shows/now-playing?movie=id&venue=id&date=YYYY-MM-DD` |
+| Update        | PUT    | `/api/v1/admin/shows/:showId`                    |
+| Cancel        | PATCH  | `/api/v1/admin/shows/:showId/cancel`             |
+| Complete      | PATCH  | `/api/v1/admin/shows/:showId/complete`           |
+| Delete        | DELETE | `/api/v1/admin/shows/:showId`                    |
+| Bulk Cancel   | POST   | `/api/v1/admin/shows/bulk-cancel`                |
 
-**Create Show Body:**
+**Sample Create Show Body**
 ```json
 {
   "movieid": "674a1b2c...",
@@ -86,16 +86,16 @@ Body: { "email": "admin@example.com", "password": "password" }
 
 ## 👤 User Management
 
-| Action | Method | Endpoint |
-|--------|--------|----------|
-| Get All | GET | `/api/v1/admin/users` |
-| Get by ID | GET | `/api/v1/admin/users/:userId` |
-| Block | PATCH | `/api/v1/admin/users/:userId/block` |
-| Unblock | PATCH | `/api/v1/admin/users/:userId/unblock` |
-| Delete | DELETE | `/api/v1/admin/users/:userId` |
-| Bulk Block/Unblock | POST | `/api/v1/admin/users/bulk-toggle-block` |
+| Action        | Method | Endpoint                                         |
+|---------------|--------|--------------------------------------------------|
+| Get All       | GET    | `/api/v1/admin/users`                            |
+| Get by ID     | GET    | `/api/v1/admin/users/:userId`                    |
+| Block         | PATCH  | `/api/v1/admin/users/:userId/block`              |
+| Unblock       | PATCH  | `/api/v1/admin/users/:userId/unblock`            |
+| Delete        | DELETE | `/api/v1/admin/users/:userId`                    |
+| Bulk Block/Unblock | POST | `/api/v1/admin/users/bulk-toggle-block`       |
 
-**Bulk Toggle Body:**
+**Sample Bulk Toggle Body**
 ```json
 {
   "userIds": ["id1", "id2"],
@@ -107,11 +107,11 @@ Body: { "email": "admin@example.com", "password": "password" }
 
 ## 📊 Dashboard
 
-| Action | Method | Endpoint |
-|--------|--------|----------|
-| Get Stats | GET | `/api/v1/admin/dashboard/stats` |
+| Action    | Method | Endpoint                        |
+|-----------|--------|---------------------------------|
+| Get Stats | GET    | `/api/v1/admin/dashboard/stats` |
 
-**Response:**
+**Sample Response**
 ```json
 {
   "totalMovies": 15,
@@ -126,16 +126,16 @@ Body: { "email": "admin@example.com", "password": "password" }
 
 ## 🔔 Notifications
 
-| Action | Method | Endpoint |
-|--------|--------|----------|
-| Send to All | POST | `/api/v1/admin/notifications/all` |
-| Send by Movie | POST | `/api/v1/admin/notifications/movie/:movieId` |
-| Send by Venue | POST | `/api/v1/admin/notifications/venue/:venueId` |
-| Notify New Show | POST | `/api/v1/admin/notifications/show/:showId` |
-| Schedule | POST | `/api/v1/admin/notifications/schedule` |
-| Get All | GET | `/api/v1/admin/notifications` |
+| Action           | Method | Endpoint                                   |
+|------------------|--------|--------------------------------------------|
+| Send to All      | POST   | `/api/v1/admin/notifications/all`          |
+| Send by Movie    | POST   | `/api/v1/admin/notifications/movie/:movieId`|
+| Send by Venue    | POST   | `/api/v1/admin/notifications/venue/:venueId`|
+| Notify New Show  | POST   | `/api/v1/admin/notifications/show/:showId` |
+| Schedule         | POST   | `/api/v1/admin/notifications/schedule`     |
+| Get All          | GET    | `/api/v1/admin/notifications`              |
 
-**Send Notification Body:**
+**Sample Notification Body**
 ```json
 {
   "title": "New Movie",
@@ -145,24 +145,27 @@ Body: { "email": "admin@example.com", "password": "password" }
 
 ---
 
-## 🔑 Authorization Header
+## 🔑 Authorization
+
+All admin routes require:
+- Valid JWT token
+- User role: `"admin"`
+
+**Header Example**
 ```
 Authorization: Bearer <accessToken>
 ```
 
-**All admin routes require:**
-- Valid JWT token
-- User role: `"admin"`
-
 ---
 
 ## ✅ Features
-- ✅ Role-based access control
-- ✅ Search & filter (movies, shows)
-- ✅ Bulk operations (delete, cancel, block)
-- ✅ Admin dashboard analytics
-- ✅ Notification system
+
+- Role-based access control
+- Search & filter (movies, shows)
+- Bulk operations (delete, cancel, block)
+- Admin dashboard analytics
+- Notification system
 
 ---
 
-**Phase 2 Complete** 🎉
+**Phase 2 Complete!** 🎉

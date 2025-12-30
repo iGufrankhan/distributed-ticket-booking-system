@@ -1,22 +1,22 @@
-# 🎟️ Phase 3: Booking & Payment System
+# 🎟️ Booking & Payment System (Phase 3)
 
-Short, clear guide to how seat locking and payment processing work in this project.
+A concise guide to how distributed seat locking and payment processing work in this project.
 
 ---
 
 ## 🚦 How It Works
-- **Redis locks** seats for 5 minutes to prevent double-booking
-- **Payment jobs** are queued and processed in the background
-- **Auto-cancel**: If payment not completed in 5 min, seats are released
-- **Admin** can monitor and retry failed jobs
+- 🪑 **Redis locks** seats for 5 minutes to prevent double-booking
+- 💸 **Payment jobs** are queued and processed in the background (BullMQ)
+- ⏰ **Auto-cancel:** If payment not completed in 5 min, seats are released
+- 🛠️ **Admin** can monitor and retry failed jobs
 
 ---
 
 ## 🗂️ Main Models
-- **Show:** movieId, theaterId, startTime, price, availableSeats
-- **Seat:** showId, seatNumber, status (available/locked/booked), lockedBy
-- **Booking:** userId, showId, seats[], status, bookingCode, totalAmount
-- **Payment:** userId, orderId, amount, status, expiresAt
+- **Show:** `movieId`, `theaterId`, `startTime`, `price`, `availableSeats`
+- **Seat:** `showId`, `seatNumber`, `status` (available/locked/booked), `lockedBy`
+- **Booking:** `userId`, `showId`, `seats[]`, `status`, `bookingCode`, `totalAmount`
+- **Payment:** `userId`, `orderId`, `amount`, `status`, `expiresAt`
 
 ---
 
@@ -39,14 +39,14 @@ Short, clear guide to how seat locking and payment processing work in this proje
 ---
 
 ## 🛠️ Admin Tools
-- **Queue stats:** `GET /admin/queue/stats`
-- **Failed jobs:** `GET /admin/queue/failed`
-- **Retry job:** `POST /admin/queue/retry/:jobId`
-- **Pause/Resume:** `POST /admin/queue/pause` | `/resume`
+- `GET /admin/queue/stats` — Queue stats
+- `GET /admin/queue/failed` — Failed jobs
+- `POST /admin/queue/retry/:jobId` — Retry failed job
+- `POST /admin/queue/pause` | `/resume` — Pause/Resume queue
 
 ---
 
-## ⚙️ Config
+## ⚙️ Configuration
 ```env
 SEAT_LOCK_EXPIRY=5          # Minutes
 PAYMENT_TIMEOUT=300000      # 5 min in ms
@@ -56,7 +56,7 @@ MAX_SEATS_PER_BOOKING=10
 
 ---
 
-## 🚀 Run Locally
+## 🚀 Running Locally
 ```bash
 npm start        # API server
 npm run worker   # Payment worker
@@ -65,9 +65,9 @@ _Both must run together!_
 
 ---
 
-## ⭐ Highlights
-- No double-booking: atomic seat locks
-- Fast user experience: async payments
-- Auto-release: no stuck seats
-- Admin can monitor and fix issues
+## ⭐ Key Highlights
+- 🪑 No double-booking: atomic seat locks
+- ⚡ Fast user experience: async payments
+- ⏰ Auto-release: no stuck seats
+- 🛠️ Admin can monitor and fix issues
 

@@ -11,17 +11,24 @@ A modern, production-ready backend API for movie ticket booking. Enjoy real-time
 
 ---
 
-## 🚀 Features
 
-- 🔐 Secure user authentication (JWT, OAuth, 2FA)
-- 🎬 Admin management for movies, venues, and shows
-- 🪑 Real-time seat locking with Redis (no double-booking!)
-- 💸 Async payment processing with BullMQ
-- ⏰ Auto-cancel & seat release on payment timeout
-- 📧 Email notifications (booking, payment, newsletters)
-- 📰 Newsletter subscription & delivery
-- 🔎 Powerful search & filter for shows
-- 🛠️ Admin queue monitoring & notification tools
+## 🌟 All Features at a Glance
+
+- 🔐 **Authentication**: JWT, OAuth (Google/GitHub), 2FA (OTP/TOTP), password reset, email verification
+- 👤 **User Management**: Register, login, profile, secure sessions
+- 🎬 **Admin Panel**: Manage movies, venues, shows, users, and bookings
+- 🪑 **Seat Locking**: Real-time, atomic seat locks with Redis (5 min hold)
+- 🎟️ **Booking System**: Book, confirm, cancel, and view bookings
+- 💸 **Payment Queue**: Async payment processing with BullMQ, auto-timeout, retries, and failure handling
+- ⏰ **Auto-Cancellation**: Bookings auto-cancelled and seats released if payment not completed in time
+- 📧 **Email Notifications**: Booking confirmation, payment status, admin/user notifications
+- 📰 **Newsletter**: User subscribe/unsubscribe, admin send newsletters, confirmation emails
+- 🔎 **Search & Filter**: Find shows by movie, city, date, genre, venue
+- 🛠️ **Admin Tools**: Queue monitoring, retry/clean jobs, send notifications, analytics endpoints
+- 📊 **Dashboard Ready**: All endpoints for building admin/user dashboards
+- 🧑‍💻 **Role-Based Access**: Secure admin/user separation
+- 🧪 **Testing Ready**: Easy to test all flows (auth, booking, payment, admin)
+- 🌐 **Deployment Ready**: Works on Render, Railway, or any VPS
 
 ---
 
@@ -54,13 +61,43 @@ npm run worker    # Payment worker
 
 ---
 
+## 🏗️ Local Installation & Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/distributed-ticket-booking-system.git
+   cd distributed-ticket-booking-system
+   ```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+3. **Set up environment variables**
+   - Copy the example file and fill in your credentials:
+     ```bash
+     cp .env.example .env
+     # Edit .env with your MongoDB, Redis, and email credentials
+     ```
+4. **Start MongoDB and Redis**
+   - You can use [MongoDB Atlas](https://www.mongodb.com/atlas/database) and [Redis Cloud](https://redis.com/redis-enterprise-cloud/overview/) for free cloud databases, or run them locally if you prefer.
+5. **Start the API server**
+   ```bash
+   npm start
+   # Runs on http://localhost:5000
+   ```
+6. **Start the payment worker**
+   ```bash
+   npm run worker
+   # Processes payment jobs in the background
+   ```
+
+---
+
 ## 📚 API Highlights
 - **/api/v1/auth/** — Register, login, 2FA, OAuth
 - **/api/v1/booking/** — Book, confirm, cancel, status
 - **/api/v1/admin/** — Movies, venues, shows, queue, notifications
 - **/api/v1/newsletter/** — Subscribe/unsubscribe
-
-See [USERWORK.MD](USERWORK.MD) and [ADMINWORK.MD](ADMINWORK.MD) for full API usage.
 
 ---
 
@@ -78,16 +115,96 @@ flowchart TD
 
 ---
 
-## 🗂️ Project Structure
+## 📁 Folder Structure
 
 ```
-src/
-  controllers/   # API logic
-  models/        # Schemas
-  services/      # Core logic (locks, queue, email)
-  workers/       # Payment processor
-  routes/        # API routes
+distributed-ticket-booking-system/
+│
+├── src/
+│   ├── controllers/    # Route logic (auth, admin, booking, user, newsletter)
+│   ├── models/         # MongoDB schemas (User, Movie, Venue, Show, Booking, Payment, Seat, Notification)
+│   ├── services/       # Core logic (seat lock, queue, email, newsletter)
+│   ├── workers/        # Payment processor (BullMQ)
+│   ├── routes/         # API routes (auth, admin, booking, user, newsletter)
+│   └── middlewares/    # Auth, validation, rate limiting
+│
+├── utils/              # Helpers, constants, email setup
+├── .env.example        # Environment variable template
+├── package.json        # Dependencies & scripts
+└── README.md           # Project docs
 ```
+
+---
+
+## 🔗 Main API Endpoints
+
+### 🛡️ Auth
+- `POST   /api/v1/auth/register`         — User registration
+- `POST   /api/v1/auth/login`            — User login
+- `POST   /api/v1/auth/2fa/send`         — Send OTP for 2FA
+- `POST   /api/v1/auth/2fa/verify`       — Verify OTP
+- `POST   /api/v1/auth/oauth/google`     — Google OAuth login
+- `POST   /api/v1/auth/oauth/github`     — GitHub OAuth login
+- `POST   /api/v1/auth/reset-password`   — Request password reset
+- `POST   /api/v1/auth/reset-password/confirm` — Confirm password reset
+
+### 👤 Admin
+- `POST   /api/v1/admin/login`           — Admin login
+- `POST   /api/v1/admin/movies`          — Create movie
+- `POST   /api/v1/admin/venues`          — Create venue
+- `POST   /api/v1/admin/shows`           — Create show
+- `GET    /api/v1/admin/queue/stats`     — Queue stats
+- `POST   /api/v1/admin/queue/retry/:jobId` — Retry failed job
+- `POST   /api/v1/admin/notifications/all` — Send notification to all users
+
+### 🎟️ Booking
+- `GET    /api/v1/booking/seats/:showId` — Get available seats
+- `POST   /api/v1/booking/book`          — Book/lock seats
+- `POST   /api/v1/booking/confirm`       — Confirm payment
+- `PATCH  /api/v1/booking/cancel/:id`    — Cancel booking
+- `GET    /api/v1/booking/status/:id`    — Booking/payment status
+- `GET    /api/v1/booking/my-bookings`   — User's bookings
+
+### 📰 Newsletter
+- `POST   /api/v1/newsletter/subscribe`   — Subscribe to newsletter
+- `POST   /api/v1/newsletter/unsubscribe` — Unsubscribe from newsletter
+
+### 🙋‍♂️ User
+- `GET    /api/v1/user/profile`           — Get user profile
+- `PATCH  /api/v1/user/profile`           — Update user profile
+- `GET    /api/v1/user/shows`             — List all shows (with filters)
+- `GET    /api/v1/user/shows/:id`         — Get show details
+- `GET    /api/v1/user/venues`            — List all venues
+- `GET    /api/v1/user/venues/:id`        — Get venue details
+- `GET    /api/v1/user/movies`            — List all movies
+- `GET    /api/v1/user/movies/:id`        — Get movie details
+- `GET    /api/v1/user/newsletters`       — List received newsletters
+- `GET    /api/v1/user/notifications`     — List user notifications
+
+---
+
+## 📖 Documentation
+
+- 🔑 **Authentication:**
+  - See [AUTH.md](AUTH.md) for registration, login, 2FA, OAuth, and password reset flows.
+- 🎟️ **Booking:**
+  - See [BOOKINGANDPAYMENT.md](BOOKINGANDPAYMENT.md) for booking, payment, seat locking, and user booking management.
+- 🛡️ **Admin:**
+  - See [ADMINWORK.md](ADMINWORK.md) for all admin features, endpoints, and dashboard actions.
+
+---
+
+## 👥 What Can Users Do?
+
+- Register and log in securely (email/password, Google, GitHub)
+- Enable 2FA for extra security
+- Browse movies, venues, and shows
+- Search and filter shows by city, date, genre, or movie
+- Book seats (with real-time locking)
+- Complete payment and receive confirmation
+- View, confirm, or cancel their bookings
+- Subscribe/unsubscribe to newsletters
+- Receive email notifications for bookings, payments, and newsletters
 
 ---
 
@@ -106,7 +223,6 @@ src/
 
 ## 👤 Author
 [Gufran Khan](https://github.com/iGufrankhan)  
-[LinkedIn](https://linkedin.com/in/gufran-khan)
 
 ---
 
