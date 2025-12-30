@@ -103,7 +103,7 @@ npm run worker    # Payment worker
 
 ## 🧩 How It Works
 
-
+```
 flowchart TD
     A[User books seats] --> B[Redis locks seats (5 min)]
     B --> C[Payment job queued]
