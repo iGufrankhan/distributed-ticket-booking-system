@@ -39,6 +39,19 @@ import {
 } from "../../controllers/admin/notification.controllers.js";
 import { verifyJWT } from "../../middlewares/auth/auth.middlewares.js";
 import { sendNewsletterHandler } from "../../controllers/admin/newsletter.controllers.js";
+import {
+  createShow,
+  updateShow,
+  deleteShow,
+  getNowPlayingShows,
+  cancelShow,
+  completeShow,
+  bulkCancelShows
+} from "../../controllers/admin/show.controllers.js";
+import {
+  addSeats,
+  getSeatsForShow
+} from "../../services/booking/seat.service.js";
 
 const router = Router();
 
@@ -87,6 +100,19 @@ router.get("/notifications", getAllNotifications);
 
 // Newsletter routes
 router.post("/newsletter/send", sendNewsletterHandler);
+
+// Show routes
+router.post("/shows", createShow);
+router.put("/shows/:showId", updateShow);
+router.delete("/shows/:showId", deleteShow);
+router.get("/shows/now-playing", getNowPlayingShows);
+router.patch("/shows/:showId/cancel", cancelShow);
+router.patch("/shows/:showId/complete", completeShow);
+router.post("/shows/bulk-cancel", bulkCancelShows);
+
+// Seat management routes (admin)
+router.post("/seats", addSeats); // Bulk add seats to a show
+router.get("/seats/:showId", getSeatsForShow); // Get all seats for a show
 
 export default router;
 

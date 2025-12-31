@@ -28,7 +28,7 @@ export const createShow = asyncHandler(async (req, res) => {
         totalSeats,
         availableSeats: totalSeats,
         occupiedSeats: {},   
-        createdBy: req.admin._id,
+        createdBy: req.user._id,
         status: "scheduled",
     });
     

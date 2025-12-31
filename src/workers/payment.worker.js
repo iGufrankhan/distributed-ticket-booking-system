@@ -20,11 +20,11 @@ paymentQueue.process('process-payment', async (job) => {
 
     // Check if payment expired
     if (new Date() > payment.expiresAt) {
-      payment.status = 'failed';
+      payment.status = 'FAILED';
       payment.failureReason = 'Payment timeout';
       await payment.save();
       await releaseSeats(showId, seats);
-      await sendPaymentFailedEmail(payment.userEmail, paymentId); // <-- Send failure email
+      await sendPaymentFailedEmail(payment.userEmail, paymentId);
       throw new Error('Payment timeout');
     }
 
@@ -34,12 +34,15 @@ paymentQueue.process('process-payment', async (job) => {
     const isPaymentSuccessful = Math.random() > 0.1; // 90% success rate for simulation
 
     if (!isPaymentSuccessful) {
-      await sendPaymentFailedEmail(payment.userEmail, paymentId); // <-- Send failure email
+      payment.status = 'FAILED';
+      payment.failureReason = 'Payment gateway error';
+      await payment.save();
+      await sendPaymentFailedEmail(payment.userEmail, paymentId);
       throw new Error('Payment gateway error');
     }
 
     // Mark payment as completed
-    payment.status = 'completed';
+    payment.status = 'COMPLETED';
     payment.completedAt = new Date();
     await payment.save();
 
@@ -49,16 +52,17 @@ paymentQueue.process('process-payment', async (job) => {
       showId,
       seats,
       paymentId: payment._id,
-      status: 'confirmed',
+      status: 'CONFIRMED',
       totalAmount: payment.amount,
-      bookingCode: generateBookingCode()
+      bookingCode: generateBookingCode(),
+      expiresAt: payment.expiresAt 
     });
 
     // Update seats to booked
     await Seat.updateMany(
       { showId, seatNumber: { $in: seats } },
       { 
-        status: 'booked', 
+        status: 'BOOKED', 
         bookingId: booking._id,
         lockedBy: null,
         lockedAt: null,
@@ -111,7 +115,7 @@ paymentQueue.process('check-payment-timeout', async (job) => {
       return;
     }
 
-    if (payment.status !== 'pending') {
+    if (payment.status !== 'PENDING') {
       console.log(`Payment ${paymentId} already processed`);
       return;
     }
@@ -133,7 +137,7 @@ paymentQueue.process('check-payment-timeout', async (job) => {
 async function handlePaymentFailure(paymentId, showId, seats, reason) {
   try {
     await Payment.findByIdAndUpdate(paymentId, {
-      status: 'failed',
+      status: 'FAILED',
       failureReason: reason
     });
 

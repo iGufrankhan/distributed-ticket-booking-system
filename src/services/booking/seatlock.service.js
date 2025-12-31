@@ -8,7 +8,7 @@ export const lockSeats = async (showId, seatNumbers, userId) => {
     const lockValue = userId.toString();
     const expirySeconds = SEAT_LOCK_EXPIRY * 60;
     
-    const result = await client.set(lockKey, lockValue, { EX: expirySeconds, NX: true });
+    const result = await client.set(lockKey, lockValue, 'EX', expirySeconds, 'NX');
     
     if (result === null) {
         throw new ApiError(409, 'Seats are already locked by another user');

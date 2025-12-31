@@ -2,6 +2,8 @@ import Seat from "../../models/seat.models.js";
 import { Show } from "../../models/show.models.js";
 import { ApiError } from "../../../utils/ApiError.js";
 import { SEAT_LOCK_EXPIRY } from "../../../utils/constant.js";
+import { asyncHandler } from "../../../utils/AsyncHandler.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 export const checkSeatAvailability = async (showId, seatNumbers) => {
   const show = await Show.findById(showId);
@@ -9,7 +11,7 @@ export const checkSeatAvailability = async (showId, seatNumbers) => {
     throw new ApiError(404, "Show not found");
   }
 
-  if (!show.isActive) {
+  if (show.status !== "active") {
     throw new ApiError(400, "Show is not active");
   }
 
@@ -22,7 +24,6 @@ export const checkSeatAvailability = async (showId, seatNumbers) => {
     throw new ApiError(400, "One or more seats do not exist");
   }
 
-  // Check for expired locks and release them
   const now = new Date();
   const expiredLocks = seats.filter(
     seat => seat.status === 'locked' && 
@@ -53,3 +54,33 @@ export const checkSeatAvailability = async (showId, seatNumbers) => {
 
   return { show, seats: updatedSeats };
 };
+
+export const addSeats = asyncHandler(async (req, res) => {
+  const { showId, seats } = req.body;
+  
+  if (!showId || !Array.isArray(seats) || seats.length === 0) {
+    return res.status(400).json({ success: false, message: "showId and seats array are required" });
+  }
+
+  const seatDocs = seats.map(seat => ({
+    showId,
+    seatNumber: seat.seatNumber,
+    row: seat.row,
+    column: seat.column,
+    price: seat.price,
+    status: "available"
+  }));
+
+  await Seat.insertMany(seatDocs);
+
+  res.status(201).json(
+    new ApiResponse(201, null, `Added ${seats.length} seats to show ${showId}`)
+  );
+});
+
+// Get all seats for a show
+export const getSeatsForShow = asyncHandler(async (req, res) => {
+  const { showId } = req.params;
+  const seats = await Seat.find({ showId });
+  res.status(200).json(new ApiResponse(200, seats, "Seats fetched"));
+});

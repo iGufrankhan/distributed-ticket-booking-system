@@ -2,18 +2,15 @@ import mongoose from "mongoose";
 
 const paymentSchema = new mongoose.Schema(
   {
-    orderId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Order",
-      required: true,
-      index: true,
-    },
+    orderId: { type: String, required: true }, 
 
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
+
+    userEmail: { type: String, required: true },
 
     amount: {
       type: Number,
@@ -33,7 +30,7 @@ const paymentSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["PENDING", "SUCCESS", "FAILED", "TIMEOUT"],
+    enum: ["PENDING", "COMPLETED", "FAILED", "TIMEOUT"],
       default: "PENDING",
       index: true,
     },

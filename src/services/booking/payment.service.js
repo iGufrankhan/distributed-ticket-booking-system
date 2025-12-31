@@ -1,21 +1,26 @@
 import Payment from "../../models/payments.models.js";
 import { releaseSeats } from "./seatlock.service.js";
-import { asyncHandler } from "../../../utils/errorHandling.js";
 import { ApiError } from "../../../utils/ApiError.js";
+import mongoose from "mongoose";
 
-export const Createpayment = asyncHandler(async (orderId, userId, amount) => {
+export const Createpayment = async (orderId, userId, amount, userEmail) => {
+    if (typeof amount !== "number" || isNaN(amount)) {
+        throw new ApiError('Amount must be a valid number', 400);
+    }
     const payment = new Payment({
-        orderId,
-        userId,
-        amount,
+        orderId: String(orderId),
+        userId: new mongoose.Types.ObjectId(userId), 
+        userEmail, 
+        amount: Number(amount),
+        status: "PENDING",
         expiresAt: new Date(Date.now() + 15 * 60 * 1000),
         idempotencyKey: `${orderId}-${Date.now()}`
     });
     await payment.save();
     return payment;
-});
+};
 
-export const Confirmpayment = asyncHandler(async (paymentId, status, failureReason = null) => {
+export const Confirmpayment = async (paymentId, status, failureReason = null) => {
     const payment = await Payment.findById(paymentId);
     if (!payment) {
         throw new ApiError('Payment not found', 404);
@@ -32,17 +37,17 @@ export const Confirmpayment = asyncHandler(async (paymentId, status, failureReas
     }
     await payment.save();
     return payment;
-});
+};
 
-export const GetpaymentStatus = asyncHandler(async (paymentId) => {
+export const GetpaymentStatus = async (paymentId) => {
     const payment = await Payment.findById(paymentId);
     if (!payment) {
         throw new ApiError('Payment not found', 404);
     }
     return payment.status;
-});
+};
 
-export const Cancelpayment = asyncHandler(async (paymentId) => {
+export const Cancelpayment = async (paymentId) => {
     const payment = await Payment.findById(paymentId);
     if (!payment) {
         throw new ApiError('Payment not found', 404);
@@ -54,5 +59,4 @@ export const Cancelpayment = asyncHandler(async (paymentId) => {
     await payment.save();
     await releaseSeats(payment.orderId);
     return payment;
-});
-
+};

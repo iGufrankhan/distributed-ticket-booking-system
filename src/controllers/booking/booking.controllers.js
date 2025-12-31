@@ -1,12 +1,14 @@
 import { lockSeats } from "../../services/booking/seatlock.service.js";
 import { checkSeatAvailability } from "../../services/booking/seat.service.js";
-import Payment from "../../models/payments.models.js";
+import { Createpayment } from "../../services/booking/payment.service.js";
 import { Booking } from "../../models/booking.models.js";
+import Payment from "../../models/payments.models.js";
 import { paymentQueue } from "../../services/queue/queue.service.js";
 import { asyncHandler } from "../../../utils/AsyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { ApiError } from "../../../utils/ApiError.js";
 import { MAX_SEATS_PER_BOOKING, PAYMENT_TIMEOUT } from "../../../utils/constant.js";
+import { generateBookingCode } from '../../../utils/bookingCodeGenerator.js';
 
 export const bookSeats = asyncHandler(async (req, res) => {
   const { showId, seats } = req.body;
@@ -22,16 +24,34 @@ export const bookSeats = asyncHandler(async (req, res) => {
 
   const { show } = await checkSeatAvailability(showId, seats);
 
+  console.log("Show status:", show.status);
+
+  // If your schema uses showPrice:
+  const seatPrice = show.showPrice;
+  if (typeof seatPrice !== "number" || isNaN(seatPrice)) {
+    throw new ApiError(400, "Show price is invalid");
+  }
+
   await lockSeats(showId, seats, userId);
 
-  const payment = await Payment.create({
-    userId,
-    orderId: `ORD-${Date.now()}-${userId}`,
-    amount: seats.length * show.price,
-    expiresAt: new Date(Date.now() + PAYMENT_TIMEOUT),
-    idempotencyKey: `${Date.now()}-${userId}`
-  });
+  const amount = seats.length * seatPrice;
+  let payment;
+  try {
+    payment = await Createpayment(
+      `ORD-${Date.now()}-${userId}`,
+      userId,
+      amount,
+      req.user.email 
+    );
+    if (!payment) {
+      throw new ApiError(500, "Payment creation failed");
+    }
+  } catch (err) {
+    console.error("Payment creation error:", err);
+    throw err;
+  }
 
+  
   await paymentQueue.add('process-payment', {
     paymentId: payment._id,
     showId,
