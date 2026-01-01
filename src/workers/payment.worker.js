@@ -31,7 +31,7 @@ paymentQueue.process('process-payment', async (job) => {
     // Simulate payment processing (replace with actual payment gateway)
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    const isPaymentSuccessful = Math.random() > 0.1; // 90% success rate for simulation
+    const isPaymentSuccessful = Math.random() > 0.1; 
 
     if (!isPaymentSuccessful) {
       payment.status = 'FAILED';

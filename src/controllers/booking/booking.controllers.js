@@ -163,11 +163,11 @@ export const cancelBooking = asyncHandler(async (req, res) => {
     throw new ApiError(403, "Unauthorized");
   }
 
-  if (booking.status !== 'confirmed') {
+  if (booking.status !== 'CONFIRMED') {
     throw new ApiError(400, "Only confirmed bookings can be cancelled");
   }
 
-  booking.status = 'cancelled';
+  booking.status = 'CANCELLED';
   await booking.save();
 
   res.status(200).json(

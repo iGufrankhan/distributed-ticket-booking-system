@@ -125,43 +125,19 @@ distributed-ticket-booking-system/
 │   ├── models/         # MongoDB schemas (User, Movie, Venue, Show, Booking, Payment, Seat, Notification)
 │   ├── services/       # Core logic (seat lock, queue, email, newsletter)
 │   ├── workers/        # Payment processor (BullMQ)
-│   ├── routes/         # API routes (auth, admin, booking, user, newsletter)
 │   └── middlewares/    # Auth, validation, rate limiting
 │
 ├── utils/              # Helpers, constants, email setup
-├── .env.example        # Environment variable template
 ├── package.json        # Dependencies & scripts
 └── README.md           # Project docs
 ```
-
----
-
-## 🔗 Main API Endpoints
-
-### 🛡️ Auth
-- `POST   /api/v1/auth/register`         — User registration
-- `POST   /api/v1/auth/login`            — User login
-- `POST   /api/v1/auth/2fa/send`         — Send OTP for 2FA
-- `POST   /api/v1/auth/2fa/verify`       — Verify OTP
-- `POST   /api/v1/auth/oauth/google`     — Google OAuth login
-- `POST   /api/v1/auth/oauth/github`     — GitHub OAuth login
-- `POST   /api/v1/auth/reset-password`   — Request password reset
-- `POST   /api/v1/auth/reset-password/confirm` — Confirm password reset
-
 ### 👤 Admin
-- `POST   /api/v1/admin/login`           — Admin login
 - `POST   /api/v1/admin/movies`          — Create movie
 - `POST   /api/v1/admin/venues`          — Create venue
 - `POST   /api/v1/admin/shows`           — Create show
 - `GET    /api/v1/admin/queue/stats`     — Queue stats
 - `POST   /api/v1/admin/queue/retry/:jobId` — Retry failed job
-- `POST   /api/v1/admin/notifications/all` — Send notification to all users
-
-### 🎟️ Booking
-- `GET    /api/v1/booking/seats/:showId` — Get available seats
-- `POST   /api/v1/booking/book`          — Book/lock seats
 - `POST   /api/v1/booking/confirm`       — Confirm payment
-- `PATCH  /api/v1/booking/cancel/:id`    — Cancel booking
 - `GET    /api/v1/booking/status/:id`    — Booking/payment status
 - `GET    /api/v1/booking/my-bookings`   — User's bookings
 
