@@ -1,16 +1,13 @@
 # 🎬✨ Distributed Ticket Booking System
-
 ![Node.js](https://img.shields.io/badge/Node.js-v22.17.1-green)
 ![Express](https://img.shields.io/badge/Express-5.x-blue)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-brightgreen)
-![Redis](https://img.shields.io/badge/Redis-Queue-red)
 
 ---
 
 A modern, production-ready backend API for movie ticket booking. Enjoy real-time seat locking, async payment processing, admin dashboards, and user notifications—all built for reliability, scalability, and a great developer experience.
 
 ---
-
 
 ## 🌟 All Features at a Glance
 
@@ -129,6 +126,7 @@ distributed-ticket-booking-system/
 │
 ├── utils/              # Helpers, constants, email setup
 ├── package.json        # Dependencies & scripts
+├── ALLAPIS.md          # Complete API reference (all endpoints)
 └── README.md           # Project docs
 ```
 ### 👤 Admin
@@ -161,12 +159,14 @@ distributed-ticket-booking-system/
 
 ## 📖 Documentation
 
+- 📚 **API Reference:**
+   - See [ALLAPIS.md](ALLAPIS.md) for a complete list and details of all API endpoints.
 - 🔑 **Authentication:**
-  - See [AUTH.md](AUTH.md) for registration, login, 2FA, OAuth, and password reset flows.
+   - See [AUTH.md](AUTH.md) for registration, login, 2FA, OAuth, and password reset flows.
 - 🎟️ **Booking:**
-  - See [BOOKINGANDPAYMENT.md](BOOKINGANDPAYMENT.md) for booking, payment, seat locking, and user booking management.
+   - See [BOOKINGANDPAYMENT.md](BOOKINGANDPAYMENT.md) for booking, payment, seat locking, and user booking management.
 - 🛡️ **Admin:**
-  - See [ADMINWORK.md](ADMINWORK.md) for all admin features, endpoints, and dashboard actions.
+   - See [ADMINWORK.md](ADMINWORK.md) for all admin features, endpoints, and dashboard actions.
 
 ---
 
