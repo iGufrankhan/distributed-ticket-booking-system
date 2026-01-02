@@ -1,4 +1,14 @@
 # 🎬✨ Distributed Ticket Booking System
+<p align="center">
+   <a href="https://distributed-ticket-booking-system-api.onrender.com" target="_blank">
+      <img src="https://img.shields.io/badge/Live%20Demo-Online-brightgreen?style=for-the-badge&logo=render" alt="Live Demo"/>
+   </a>
+</p>
+
+<p align="center">
+   <b>🌐 <a href="https://distributed-ticket-booking-system-api.onrender.com" target="_blank">View the API Live on Render</a></b>
+</p>
+
 ![Node.js](https://img.shields.io/badge/Node.js-v22.17.1-green)
 ![Express](https://img.shields.io/badge/Express-5.x-blue)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-brightgreen)

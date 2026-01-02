@@ -1,6 +1,20 @@
-# 📚 ALLAPIS.md — Complete API Reference
+# 🚦 ALLAPIS.md — Complete API Reference
 
-A comprehensive list of all API endpoints in the Distributed Ticket Booking System, with details on request/response, authentication, and usage notes.
+<p align="center">
+  <img src="https://img.shields.io/badge/API-Live-green?style=for-the-badge&logo=render" alt="Live API"/>
+  <br/>
+  <a href="https://distributed-ticket-booking-system-api.onrender.com" target="_blank"><b>🌐 https://distributed-ticket-booking-system-api.onrender.com</b></a>
+</p>
+
+> **Welcome!**  
+> This is the complete, organized, and beautiful API reference for the Distributed Ticket Booking System.
+>
+> - 🟢 **Base URL:** Use the link above for all endpoints.
+> - 📦 **Response Format:** All endpoints return `{ statusCode, data, message }`.
+> - 🔑 **Auth:** Endpoints marked with "Bearer token" require a JWT in the `Authorization` header.
+> - 🛡️ **Admin:** Endpoints marked with "Admin token" require admin privileges.
+> - 📝 **See** [README.md](README.md) for setup, and [ALLAPIS.md](ALLAPIS.md) for this reference.
+> - 💡 **Tip:** Try endpoints in Postman or your favorite API client!
 
 ---
 
@@ -211,15 +225,6 @@ A comprehensive list of all API endpoints in the Distributed Ticket Booking Syst
 - **Auth:** Admin token
 - **Body:** `{ message }`
 - **Response:** Notification sent
-
----
-
-## ⚠️ Notes
-- All endpoints return `{ statusCode, data, message }` format
-- Auth endpoints require JWT unless noted
-- 2FA endpoints require email verification
-- Admin endpoints require admin role
-- See README.md for environment setup and running instructions
 
 ---
 
