@@ -207,7 +207,7 @@ distributed-ticket-booking-system/
 
 ---
 
-## � Docker Hub
+## 🐳 Docker Hub
 
 This project is published on Docker Hub and ready to use!
 
@@ -223,11 +223,21 @@ This project is published on Docker Hub and ready to use!
 docker pull iambacktrack/ticket-system:latest
 ```
 
-### Run the Container
+### Run the System (Recommended)
 
 ```bash
-docker run -d -p 5000:5000 --env-file .env iambacktrack/ticket-system:latest
+# 1. Clone the repository
+git clone https://github.com/yourusername/distributed-ticket-booking-system.git
+cd distributed-ticket-booking-system
+
+# 2. Create .env file
+cp .env.example .env
+
+# 3. Run with Docker Compose
+docker compose up
 ```
+
+**Open:** [http://localhost:5000](http://localhost:5000)
 
 ### Push Updates (for maintainers)
 
@@ -247,7 +257,7 @@ docker push iambacktrack/ticket-system:v2
 
 ---
 
-## �👤 Author
+## 👤 Author
 [Gufran Khan](https://github.com/iGufrankhan)  
 
 ---
