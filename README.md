@@ -207,7 +207,47 @@ distributed-ticket-booking-system/
 
 ---
 
-## 👤 Author
+## � Docker Hub
+
+This project is published on Docker Hub and ready to use!
+
+<p align="center">
+   <a href="https://hub.docker.com/r/iambacktrack/ticket-system" target="_blank">
+      <img src="https://img.shields.io/badge/Docker%20Hub-iambacktrack%2Fticket--system-blue?style=for-the-badge&logo=docker" alt="Docker Hub"/>
+   </a>
+</p>
+
+### Pull the Image
+
+```bash
+docker pull iambacktrack/ticket-system:latest
+```
+
+### Run the Container
+
+```bash
+docker run -d -p 5000:5000 --env-file .env iambacktrack/ticket-system:latest
+```
+
+### Push Updates (for maintainers)
+
+```bash
+# Build a new version
+docker build -t iambacktrack/ticket-system:v2 .
+
+# Push to Docker Hub
+docker push iambacktrack/ticket-system:v2
+```
+
+### Available Tags
+| Tag | Description |
+|-----|-------------|
+| `latest` | Latest stable release |
+| `v1`, `v2`, ... | Versioned releases |
+
+---
+
+## �👤 Author
 [Gufran Khan](https://github.com/iGufrankhan)  
 
 ---
