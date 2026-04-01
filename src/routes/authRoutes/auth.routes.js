@@ -6,7 +6,8 @@ import {
   loginUser, 
   getMe,
   resendVerificationOtp,
-  changePassword
+  changePassword,
+  refreshToken
 } from "../../controllers/auth/auth.controllers.js";
 import { verifyJWT } from "../../middlewares/auth/auth.middlewares.js";
 import { validate } from "../../middlewares/limiterandverify/validate.middleware.js";
@@ -27,12 +28,15 @@ const router = Router();
 
 // Public routes - OTP-based signup flow
 router.post("/send-otp", otpLimiter, validate(sendOtpSchema), sendOtp);           // Step 1: Send OTP
+
 router.post("/verify-otp", validate(verifyOtpSchema), verifyOtp);       // Step 2: Verify OTP
+
 router.post("/register", validate(completeSignupSchema), registerUser);      // Step 3: Complete registration
 router.post("/login",loginLimiter, validate(loginSchema), loginUser);
 router.post("/resend-otp",otpLimiter, validate(sendOtpSchema), resendVerificationOtp);
 router.post("/change-password", verifyJWT, changePassword);
 router.post("/logout", logoutUser);
+router.post("/refresh-token", refreshToken);
 
 // Protected routes
 router.get("/me", verifyJWT, getMe);

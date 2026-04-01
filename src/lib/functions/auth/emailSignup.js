@@ -6,7 +6,7 @@ import { ApiError } from "../../../../utils/ApiError.js";
 import {ApiResponse} from "../../../../utils/ApiResponse.js";
 import { sendOtp } from "./sendOtp.js";
 import { EMAIL_FROM, CLIENT_URL } from "../../../../utils/constant.js";
-import {generateAccessToken} from "../../../../utils/token.js";
+import {generateAccessToken, generateRefreshToken} from "../../../../utils/token.js";
 
 
 export const initiateEmailSignup = async (email) => {
@@ -37,16 +37,19 @@ export const verifyEmailSignupOtp = async (email, otp) => {
     if (!otpRecord) {   
     throw new ApiError(400, "Invalid or expired OTP");
     }
-    // OTP is valid, delete it
-    await OTP.deleteMany({ email, purpose: "signup" });
-    const accessToken = generateAccessToken(email);
 
+     await OTP.deleteOne({ _id: otpRecord._id });
+
+     
+
+    const accessToken = generateAccessToken(email);
     return new ApiResponse(200, { accessToken }, "OTP verified successfully");
 };
 
 
 
 export const completeEmailSignup = async (name, email, password) => {
+ 
   // Check if user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
@@ -65,16 +68,20 @@ export const completeEmailSignup = async (name, email, password) => {
     authProvider: "email",
     isEmailVerified: true,
   });
-  return new ApiResponse(
-    201,
-    {
-      id: newUser._id,
-      name: newUser.fullName,
-      email: newUser.email,
-      username: newUser.username,
-    },
-    "User registered successfully"
-  );
+  
+  const accessToken = generateAccessToken(newUser._id);
+  const refreshToken = generateRefreshToken(newUser._id);
+  newUser.refreshToken = refreshToken;
+  await newUser.save({ validateBeforeSave: false });
+
+  return new ApiResponse(201, {
+    id: newUser._id,
+    name: newUser.fullName,
+    email: newUser.email,
+    username: newUser.username,
+    accessToken,
+    refreshToken
+  }, "User registered successfully");
 };
 
 

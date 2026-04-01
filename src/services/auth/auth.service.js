@@ -1,10 +1,8 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { User } from "../../models/user.models.js";
 import { ApiError } from "../../../utils/ApiError.js";
 import {ApiResponse} from "../../../utils/ApiResponse.js";
-import { JWT_SECRET } from "../../../utils/constant.js";
-import { generateAccessToken } from "../../../utils/token.js";
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../../../utils/token.js";
 
 export const register = async ({ name, email, password, role = "user" }) => {
   const existed = await User.findOne({ email });
@@ -23,6 +21,12 @@ export const register = async ({ name, email, password, role = "user" }) => {
   await newUser.generateUsername();
   await newUser.save();
 
+  const accessToken = generateAccessToken(newUser._id);
+  const refreshToken = generateRefreshToken(newUser._id);
+  newUser.refreshToken = refreshToken;
+  await newUser.save({ validateBeforeSave: false });
+
+
   return new ApiResponse(
     201,
     {
@@ -30,6 +34,8 @@ export const register = async ({ name, email, password, role = "user" }) => {
       name: newUser.fullName,
       email: newUser.email,
       username: newUser.username,
+      accessToken,
+      refreshToken
     },
     "User registered successfully"
   );
@@ -80,13 +86,16 @@ export const login = async ({ email, password }) => {
     );
   }
 
-  console.log("user._id type:", typeof user._id, "value:", user._id);
-  const token = generateAccessToken(user._id);
+  const accessToken = generateAccessToken(user._id);
+  const refreshToken = generateRefreshToken(user._id);
+  user.refreshToken = refreshToken;
+  await user.save({ validateBeforeSave: false });
 
   return new ApiResponse(
     200,
     {
-      token,
+      accessToken,
+      refreshToken,
       user: {
         id: user._id,
         name: user.fullName,
@@ -98,3 +107,54 @@ export const login = async ({ email, password }) => {
     "Login successful"
   );
 };
+
+export const refreshAccessToken = async ({ refreshToken }) => {
+  if (!refreshToken) {
+    throw new ApiError(400, "Refresh token is required");
+  }
+
+  const decoded = verifyRefreshToken(refreshToken);
+  if (!decoded) {
+    throw new ApiError(401, "Invalid or expired refresh token");
+  }
+
+  const user = await User.findById(decoded.userId).select("+refreshToken");
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  if (!user.refreshToken || user.refreshToken !== refreshToken) {
+    throw new ApiError(401, "Refresh token is invalid or has been revoked");
+  }
+
+  const newAccessToken = generateAccessToken(user._id);
+  const newRefreshToken = generateRefreshToken(user._id);
+  user.refreshToken = newRefreshToken;
+  await user.save({ validateBeforeSave: false });
+
+  return new ApiResponse(
+    200,
+    {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    },
+    "Access token refreshed successfully"
+  );
+};
+
+export const logout = async ({ refreshToken }) => {
+  if (refreshToken) {
+    const decoded = verifyRefreshToken(refreshToken);
+    if (decoded?.userId) {
+      await User.findByIdAndUpdate(decoded.userId, { $unset: { refreshToken: 1 } });
+    }
+  }
+
+  return new ApiResponse(
+    200,
+    null,
+    "Logged out successfully"
+  );
+};
+
+

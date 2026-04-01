@@ -1,14 +1,26 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+const getRequiredEnv = (name) => {
+	const value = process.env[name];
+	if (!value) {
+		throw new Error(`Missing required environment variable: ${name}`);
+	}
+	return value;
+};
+
 export const PORT = process.env.PORT || 5000;
 export const MONGO_URI = process.env.MONGO_URI;
-export const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+export const JWT_SECRET = getRequiredEnv("JWT_SECRET");
 export const GMAIL_USER = process.env.GMAIL_USER;
 export const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
 export const EMAIL_FROM = process.env.EMAIL_FROM || process.env.GMAIL_USER;
 export const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
 export const OTP_EXPIRY_MINUTES = process.env.OTP_EXPIRY_MINUTES || 10;
+export const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY || "1d";
+export const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY || "7d";
+export const ACCESS_TOKEN_SECRET = getRequiredEnv("ACCESS_TOKEN_SECRET");
+export const REFRESH_TOKEN_SECRET = getRequiredEnv("REFRESH_TOKEN_SECRET");
 
 // OAuth Configuration
 export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;

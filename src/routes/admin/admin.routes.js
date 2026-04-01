@@ -37,7 +37,7 @@ import {
   scheduleNotification,
   getAllNotifications
 } from "../../controllers/admin/notification.controllers.js";
-import { verifyJWT } from "../../middlewares/auth/auth.middlewares.js";
+import { verifyAdminJWT } from "../../middlewares/auth/auth.middlewares.js";
 import { sendNewsletterHandler } from "../../controllers/admin/newsletter.controllers.js";
 import {
   createShow,
@@ -56,7 +56,7 @@ import {
 const router = Router();
 
 // All admin routes require authentication and admin role
-router.use(verifyJWT);
+router.use(verifyAdminJWT);
 
 // Movie routes
 router.post("/movies", createMovie);

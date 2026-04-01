@@ -1,8 +1,9 @@
 import {asyncHandler} from "../../../utils/AsyncHandler.js";
 import {ApiResponse} from "../../../utils/ApiResponse.js";
 import {ApiError} from "../../../utils/ApiError.js";
-import { login } from "../../services/auth/auth.service.js";
+import { login, refreshAccessToken } from "../../services/auth/auth.service.js";
 import { User } from "../../models/user.models.js";
+import bcrypt from "bcryptjs";
 import { 
   initiateEmailSignup, 
   verifyEmailSignupOtp, 
@@ -83,5 +84,14 @@ export const changePassword = asyncHandler(async (req, res) => {
 
   res.json({ message: "Password changed successfully" });
 });
+
+// Refresh Access Token
+export const refreshToken = asyncHandler(async (req, res) => {
+  const { refreshToken } = req.body;
+  const result = await refreshAccessToken({ refreshToken });
+  res.status(200).json(result);
+});
+
+
 
 

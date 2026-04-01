@@ -120,12 +120,14 @@ export const verify2FA = asyncHandler(async (req, res) => {
     
     // Generate token
     const token = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
 
     res.status(200).json(
         new ApiResponse(
             200,
             {
                 token,
+                refreshToken,
                 user: {
                     id: user._id,
                     name: user.fullName,

@@ -27,6 +27,11 @@ const userSchema = new mongoose.Schema(
       select: false, 
     },
 
+    refreshToken: {
+      type: String,
+      select: false,
+    },
+
     authProvider: {
       type: String,
       enum: ["email", "google", "github"],
@@ -97,6 +102,9 @@ twoFactorEnabled: {
       type: Boolean,
       default: false
     }
+
+
+    
 
    
   },
