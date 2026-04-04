@@ -1,8 +1,18 @@
 import jwt from "jsonwebtoken";
-import { ACCESS_TOKEN_EXPIRY, ACCESS_TOKEN_SECRET, JWT_SECRET,} from "./constant.js";
+import {
+  ACCESS_TOKEN_EXPIRY,
+  ACCESS_TOKEN_SECRET,
+  REFRESH_TOKEN_EXPIRY,
+  REFRESH_TOKEN_SECRET,
+} from "./constant.js";
 
 export const generateAccessToken = (userId) => {
-  return jwt.sign({ userId }, ACCESS_TOKEN_SECRET, { expiresIn:ACCESS_TOKEN_EXPIRY   });
+  const accessToken = jwt.sign({ userId }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRY });
+
+  return accessToken;
+
+
+
 };
 
 export const verifyAccessToken = (token) => {
@@ -13,13 +23,9 @@ export const verifyAccessToken = (token) => {
   }
 };
 
-
-
 export const generateRefreshToken = (userId) => {
   return jwt.sign({ userId }, REFRESH_TOKEN_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRY });
 };
-
-
 
 export const verifyRefreshToken = (token) => {
   try {

@@ -2,26 +2,30 @@
 import {ApiError} from "../../../utils/ApiError.js";
 import {ApiResponse} from "../../../utils/ApiResponse.js";
 import {asyncHandler} from "../../../utils/AsyncHandler.js";
-import { send2FAOtp } from "../../services/auth/2fa.service.js";
 import  OTP  from "../../models/otp.models.js";
 import { User } from "../../models/user.models.js";
-import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../../../utils/constant.js";
-import {generateAccessToken} from "../../../utils/token.js";
+import { sendOtp } from "../../lib/functions/auth/sendOtp.js";
+import {generateAccessToken,generateRefreshToken} from "../../../utils/token.js";
+import { setAuthCookies } from "../../lib/helper/cookiesadded.js";
+
 
 /**
  * Request to enable 2FA - sends OTP to email
  */
 export const initiate2FA = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
     
     if (user.twoFactorEnabled) {
         throw new ApiError(400, "2FA is already enabled");
     }
 
     // Send OTP to verify email before enabling 2FA
-    const { sendOtp } = await import("../lib/functions/auth/sendOtp.js");
     await sendOtp(user.email, "enable2FA");
+  
 
     res.status(200).json(
         new ApiResponse(200, { email: user.email }, "OTP sent to your email. Verify to enable 2FA.")
@@ -34,6 +38,10 @@ export const initiate2FA = asyncHandler(async (req, res) => {
 export const verifyAndEnable2FA = asyncHandler(async (req, res) => {
     const { otp } = req.body;
     const user = await User.findById(req.user._id);
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
 
     if (user.twoFactorEnabled) {
         throw new ApiError(400, "2FA is already enabled");
@@ -77,7 +85,7 @@ export const disable2FA = asyncHandler(async (req, res) => {
 
     // Verify password
     const bcrypt = await import("bcryptjs");
-    const isValid = await bcrypt.compare(password, user.password);
+    const isValid = await bcrypt.default.compare(password, user.password);
     if (!isValid) {
         throw new ApiError(401, "Invalid password");
     }
@@ -119,14 +127,15 @@ export const verify2FA = asyncHandler(async (req, res) => {
     await OTP.deleteOne({ _id: otpRecord._id });
     
     // Generate token
-    const token = generateAccessToken(user._id);
+    const accessToken = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
 
-    res.status(200).json(
+    setAuthCookies(res, accessToken, refreshToken);
+   res.status(200).json(
         new ApiResponse(
             200,
             {
-                token,
+                accessToken,
                 refreshToken,
                 user: {
                     id: user._id,

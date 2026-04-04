@@ -16,12 +16,14 @@ import {
   sendOtpSchema, 
   verifyOtpSchema, 
   completeSignupSchema, 
-  loginSchema
+  loginSchema,
+  changePasswordSchema
 } from "../../../utils/validators/auth.validators.js";
 
 import {
   otpLimiter,
-  loginLimiter
+  loginLimiter,
+  changePasswordLimiter
 } from  "../../middlewares/limiterandverify/rateLimiter.middlewares.js";
 
 const router = Router();
@@ -30,13 +32,12 @@ const router = Router();
 router.post("/send-otp", otpLimiter, validate(sendOtpSchema), sendOtp);           // Step 1: Send OTP
 
 router.post("/verify-otp", validate(verifyOtpSchema), verifyOtp);       // Step 2: Verify OTP
-
 router.post("/register", validate(completeSignupSchema), registerUser);      // Step 3: Complete registration
 router.post("/login",loginLimiter, validate(loginSchema), loginUser);
 router.post("/resend-otp",otpLimiter, validate(sendOtpSchema), resendVerificationOtp);
-router.post("/change-password", verifyJWT, changePassword);
-router.post("/logout", logoutUser);
-router.post("/refresh-token", refreshToken);
+router.post("/change-password", changePasswordLimiter, verifyJWT, validate(changePasswordSchema), changePassword);
+router.post("/logout", verifyJWT, logoutUser);
+router.post("/refresh-token",verifyJWT, refreshToken);
 
 // Protected routes
 router.get("/me", verifyJWT, getMe);

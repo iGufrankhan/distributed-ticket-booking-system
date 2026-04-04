@@ -49,4 +49,16 @@ export const resetPasswordSchema = Joi.object({
     }),
 });
 
+export const changePasswordSchema = Joi.object({
+  oldPassword: Joi.string().required(),
+  newPassword: Joi.string()
+    .min(8)
+    .pattern(strongPasswordPattern)
+    .required()
+    .messages({
+      'string.pattern.base': strongPasswordMessage,
+      'string.min': 'New password must be at least 8 characters long',
+    }),
+});
+
 

@@ -1,20 +1,21 @@
-import {asyncHandler} from "../../../utils/AsyncHandler.js";
-import {ApiResponse} from "../../../utils/ApiResponse.js";
-import {ApiError} from "../../../utils/ApiError.js";
+import { asyncHandler } from "../../../utils/AsyncHandler.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
+import { ApiError } from "../../../utils/ApiError.js";
 import { login, refreshAccessToken } from "../../services/auth/auth.service.js";
 import { User } from "../../models/user.models.js";
 import bcrypt from "bcryptjs";
-import { 
-  initiateEmailSignup, 
-  verifyEmailSignupOtp, 
-  completeEmailSignup 
+import {
+  initiateEmailSignup,
+  verifyEmailSignupOtp,
+  completeEmailSignup,
 } from "../../lib/functions/auth/emailSignup.js";
+import { setAuthCookies } from "../../lib/helper/cookiesadded.js";
 
 // Step 1: Send OTP to email
 export const sendOtp = asyncHandler(async (req, res) => {
   const { email } = req.body;
   await initiateEmailSignup(email);
-  
+
   res.status(200).json(
     new ApiResponse(200, { email }, "OTP sent to your email")
   );
@@ -24,7 +25,7 @@ export const sendOtp = asyncHandler(async (req, res) => {
 export const verifyOtp = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
   const result = await verifyEmailSignupOtp(email, otp);
-  
+
   res.status(200).json(result);
 });
 
@@ -32,13 +33,29 @@ export const verifyOtp = asyncHandler(async (req, res) => {
 export const registerUser = asyncHandler(async (req, res) => {
   const { fullName, email, password } = req.body;
   const result = await completeEmailSignup(fullName, email, password);
-  
+
+  if (result?.data?.accessToken && result?.data?.refreshToken) {
+    setAuthCookies(res, result.data.accessToken, result.data.refreshToken);
+  }
+
   res.status(201).json(result);
 });
 
 // Login
 export const loginUser = asyncHandler(async (req, res) => {
   const result = await login(req.body);
+
+  
+
+ 
+  if (
+    !result?.data?.requires2FA &&
+    result?.data?.accessToken &&
+    result?.data?.refreshToken
+  ) {
+    setAuthCookies(res, result.data.accessToken, result.data.refreshToken);
+  }
+
   res.status(200).json(result);
 });
 
@@ -49,20 +66,15 @@ export const getMe = asyncHandler(async (req, res) => {
   );
 });
 
-
 export const resendVerificationOtp = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   const user = await User.findOne({ email });
-  if (!user) {
-    throw new ApiError(404, "User not found");
+  if (user) {
+    throw new ApiError(404, "User already exists with this email");
   }
 
-  if (user.isEmailVerified) {
-    throw new ApiError(400, "Email already verified");
-  }
 
-  // Reuse existing OTP logic
   await initiateEmailSignup(email);
 
   res.status(200).json(
@@ -70,25 +82,37 @@ export const resendVerificationOtp = asyncHandler(async (req, res) => {
   );
 });
 
-
 export const changePassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
 
-  const user = await User.findById(req.user.id).select("+password");
+  const user = await User.findById(req.user._id).select("+password");
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
 
   const match = await bcrypt.compare(oldPassword, user.password);
-  if (!match) throw new ApiError(400, "Old password incorrect");
+  if (!match) {
+    throw new ApiError(400, "Old password incorrect");
+  }
 
   user.password = await bcrypt.hash(newPassword, 10);
   await user.save();
 
-  res.json({ message: "Password changed successfully" });
+  res.status(200).json(
+    new ApiResponse(200, null, "Password changed successfully")
+  );
 });
+
 
 // Refresh Access Token
 export const refreshToken = asyncHandler(async (req, res) => {
-  const { refreshToken } = req.body;
-  const result = await refreshAccessToken({ refreshToken });
+  const incomingRefreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
+  const result = await refreshAccessToken({ refreshToken: incomingRefreshToken });
+
+  if (result?.data?.accessToken && result?.data?.refreshToken) {
+    setAuthCookies(res, result.data.accessToken, result.data.refreshToken);
+  }
+
   res.status(200).json(result);
 });
 

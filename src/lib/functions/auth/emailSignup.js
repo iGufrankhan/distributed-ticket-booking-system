@@ -71,6 +71,12 @@ export const completeEmailSignup = async (name, email, password) => {
   
   const accessToken = generateAccessToken(newUser._id);
   const refreshToken = generateRefreshToken(newUser._id);
+
+  
+
+
+
+
   newUser.refreshToken = refreshToken;
   await newUser.save({ validateBeforeSave: false });
 
