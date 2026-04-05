@@ -5,14 +5,15 @@ import {ApiResponse} from "../../../utils/ApiResponse.js";
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../../../utils/token.js";
 
 export const register = async ({ name, email, password, role = "user" }) => {
-  const existed = await User.findOne({ email });
+  const normalizedEmail = email.toLowerCase();
+  const existed = await User.findOne({ email: normalizedEmail });
   if (existed) throw new ApiError(400, "Email already registered");
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const newUser = await User.create({
     fullName: name,
-    email,
+    email: normalizedEmail,
     password: hashedPassword,
     authProvider: "email",
   });
@@ -42,7 +43,8 @@ export const register = async ({ name, email, password, role = "user" }) => {
 };
 
 export const login = async ({ email, password }) => {
-  const user = await User.findOne({ email }).select("+password");
+  const normalizedEmail = email.toLowerCase();
+  const user = await User.findOne({ email: normalizedEmail }).select("+password");
   if (!user) throw new ApiError(400, "Invalid email or password");
 
   if (!user.isEmailVerified) {

@@ -7,7 +7,7 @@ import bcrypt from "bcryptjs";
 import {
   initiateEmailSignup,
   verifyEmailSignupOtp,
-  completeEmailSignup,
+  completeEmailSignup
 } from "../../lib/functions/auth/emailSignup.js";
 import { setAuthCookies } from "../../lib/helper/cookiesadded.js";
 
@@ -102,6 +102,9 @@ export const changePassword = asyncHandler(async (req, res) => {
     new ApiResponse(200, null, "Password changed successfully")
   );
 });
+
+
+
 
 
 // Refresh Access Token

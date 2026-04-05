@@ -1,4 +1,4 @@
-import { lockSeats } from "../../services/booking/seatlock.service.js";
+import { lockSeats, unlockSeats, releaseSeats } from "../../services/booking/seatlock.service.js";
 import { checkSeatAvailability } from "../../services/booking/seat.service.js";
 import { Createpayment } from "../../services/booking/payment.service.js";
 import { Booking } from "../../models/booking.models.js";
@@ -8,7 +8,6 @@ import { asyncHandler } from "../../../utils/AsyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { ApiError } from "../../../utils/ApiError.js";
 import { MAX_SEATS_PER_BOOKING, PAYMENT_TIMEOUT } from "../../../utils/constant.js";
-import { generateBookingCode } from '../../../utils/bookingCodeGenerator.js';
 
 export const bookSeats = asyncHandler(async (req, res) => {
   const { showId, seats } = req.body;
@@ -41,13 +40,17 @@ export const bookSeats = asyncHandler(async (req, res) => {
       `ORD-${Date.now()}-${userId}`,
       userId,
       amount,
-      req.user.email 
+      req.user.email,
+      showId,
+      seats
     );
     if (!payment) {
       throw new ApiError(500, "Payment creation failed");
     }
   } catch (err) {
     console.error("Payment creation error:", err);
+    // Rollback: unlock seats if payment creation fails
+    await unlockSeats(showId, seats, userId);
     throw err;
   }
 
@@ -153,7 +156,7 @@ export const cancelBooking = asyncHandler(async (req, res) => {
   const { bookingId } = req.params;
   const userId = req.user._id;
 
-  const booking = await Booking.findById(bookingId);
+  const booking = await Booking.findById(bookingId).populate('paymentId');
 
   if (!booking) {
     throw new ApiError(404, "Booking not found");
@@ -167,10 +170,19 @@ export const cancelBooking = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Only confirmed bookings can be cancelled");
   }
 
+  // Mark payment as refunded
+  if (booking.paymentId) {
+    booking.paymentId.status = 'REFUNDED';
+    await booking.paymentId.save();
+  }
+
+  // Release the locked seats
+  await releaseSeats(booking.showId, booking.seats);
+
   booking.status = 'CANCELLED';
   await booking.save();
 
   res.status(200).json(
-    new ApiResponse(200, booking, "Booking cancelled successfully")
+    new ApiResponse(200, booking, "Booking cancelled and refunded successfully")
   );
 });

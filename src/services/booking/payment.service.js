@@ -1,9 +1,9 @@
 import Payment from "../../models/payments.models.js";
-import { releaseSeats } from "./seatlock.service.js";
+import { releaseSeats, unlockSeats } from "./seatlock.service.js";
 import { ApiError } from "../../../utils/ApiError.js";
 import mongoose from "mongoose";
 
-export const Createpayment = async (orderId, userId, amount, userEmail) => {
+export const Createpayment = async (orderId, userId, amount, userEmail, showId, seats) => {
     if (typeof amount !== "number" || isNaN(amount)) {
         throw new ApiError('Amount must be a valid number', 400);
     }
@@ -13,6 +13,8 @@ export const Createpayment = async (orderId, userId, amount, userEmail) => {
         userEmail, 
         amount: Number(amount),
         status: "PENDING",
+        showId,
+        seats,
         expiresAt: new Date(Date.now() + 15 * 60 * 1000),
         idempotencyKey: `${orderId}-${Date.now()}`
     });
@@ -33,7 +35,10 @@ export const Confirmpayment = async (paymentId, status, failureReason = null) =>
         payment.failureReason = failureReason;
     }
     if (status === 'FAILED' || status === 'TIMEOUT') {
-        await releaseSeats(payment.orderId);
+        await unlockSeats(payment.showId, payment.seats, payment.userId);
+    }
+    if (status === 'COMPLETED') {
+        payment.completedAt = new Date();
     }
     await payment.save();
     return payment;
@@ -57,6 +62,6 @@ export const Cancelpayment = async (paymentId) => {
     }
     payment.status = 'CANCELLED';
     await payment.save();
-    await releaseSeats(payment.orderId);
+    await unlockSeats(payment.showId, payment.seats, payment.userId);
     return payment;
 };

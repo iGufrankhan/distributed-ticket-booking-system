@@ -22,11 +22,49 @@ export const initiateEmailSignup = async (email) => {
   return { email };
 };
 
+export const initiateEmailforgotPassword = async (email) => {
+  // Check if user exists
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(404, "User with this email does not exist");
+  }
+
+  // Send OTP
+  await sendOtp(email, "resetPassword");
+
+  return { email };
+};
+
+export const verifyEmailforgotPasswordOtp = async (email, otp) => {  
+  const otpRecord = await OTP.findOne({
+    email,
+    otp,
+    purpose: "resetPassword",
+    expiresAt: { $gt: new Date() },
+  });
+
+  if (!otpRecord) {   
+    throw new ApiError(400, "Invalid or expired OTP");
+  }
+
+  // Find user to get their ID
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  // Delete OTP after verification
+  await OTP.deleteOne({ _id: otpRecord._id });
+  
+  // Generate token with userId, not email
+  const accessToken = generateAccessToken(user._id);
+  return new ApiResponse(200, { accessToken }, "OTP verified successfully");
+};
+
+
+
 
 export const verifyEmailSignupOtp = async (email, otp) => {  
-    
-
-    
   const otpRecord = await OTP.findOne({
     email,
     otp,
@@ -34,31 +72,31 @@ export const verifyEmailSignupOtp = async (email, otp) => {
     expiresAt: { $gt: new Date() },
   });
 
-    if (!otpRecord) {   
+  if (!otpRecord) {   
     throw new ApiError(400, "Invalid or expired OTP");
-    }
+  }
 
-     await OTP.deleteOne({ _id: otpRecord._id });
+  await OTP.deleteOne({ _id: otpRecord._id });
 
-     
-
-    const accessToken = generateAccessToken(email);
-    return new ApiResponse(200, { accessToken }, "OTP verified successfully");
+  // Return success without token - token will be generated after registration
+  return new ApiResponse(200, { email }, "OTP verified successfully");
 };
 
 
 
 export const completeEmailSignup = async (name, email, password) => {
- 
   // Check if user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new ApiError(409, "User with this email already exists");
   }
-  // Generate username        
+
+  // Generate username
   const username = await generateUsernameFromEmail(email);
+
   // Hash password
   const hashedPassword = await bcrypt.hash(password, 10);
+
   // Create user
   const newUser = await User.create({
     fullName: name,
@@ -71,11 +109,6 @@ export const completeEmailSignup = async (name, email, password) => {
   
   const accessToken = generateAccessToken(newUser._id);
   const refreshToken = generateRefreshToken(newUser._id);
-
-  
-
-
-
 
   newUser.refreshToken = refreshToken;
   await newUser.save({ validateBeforeSave: false });

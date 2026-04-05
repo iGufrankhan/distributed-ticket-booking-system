@@ -4,14 +4,15 @@ import { SEAT_LOCK_EXPIRY } from '../../../utils/constant.js';
 import { ApiError } from '../../../utils/ApiError.js';
 
 export const lockSeats = async (showId, seatNumbers, userId) => {
-    const lockKey = `seatlock:${showId}:${seatNumbers.sort().join(',')}`;
-    const lockValue = userId.toString();
     const expirySeconds = SEAT_LOCK_EXPIRY * 60;
     
-    const result = await client.set(lockKey, lockValue, 'EX', expirySeconds, 'NX');
-    
-    if (result === null) {
-        throw new ApiError(409, 'Seats are already locked by another user');
+    // Lock individual seats
+    const promises = seatNumbers.map(seat => 
+        client.set(`seatlock:${showId}:${seat}`, userId.toString(), 'EX', expirySeconds, 'NX')
+    );
+    const results = await Promise.all(promises);
+    if (results.includes(null)) {
+        throw new ApiError(409, 'Some seats are already locked');
     }
 
     // Also update seat status in DB
@@ -28,14 +29,19 @@ export const lockSeats = async (showId, seatNumbers, userId) => {
 };
 
 export const unlockSeats = async (showId, seatNumbers, userId) => {
-    const lockKey = `seatlock:${showId}:${seatNumbers.sort().join(',')}`;
-    const lockValue = await client.get(lockKey);
+    // Unlock individual seats
+    const promises = seatNumbers.map(async (seat) => {
+        const lockKey = `seatlock:${showId}:${seat}`;
+        const lockValue = await client.get(lockKey);
+        
+        if (lockValue && lockValue !== userId.toString()) {
+            throw new ApiError(403, 'Cannot unlock seats locked by another user');
+        }
+        
+        return client.del(lockKey);
+    });
     
-    if (lockValue && lockValue !== userId.toString()) {
-        throw new ApiError(403, 'Cannot unlock seats locked by another user');
-    }
-    
-    await client.del(lockKey);
+    await Promise.all(promises);
 
     // Update seat status in DB
     await Seat.updateMany(
@@ -51,8 +57,10 @@ export const unlockSeats = async (showId, seatNumbers, userId) => {
 };
 
 export const releaseSeats = async (showId, seats) => {
-    const lockKey = `seatlock:${showId}:${seats.sort().join(',')}`;
-    await client.del(lockKey);
+    const promises = seats.map(seat =>
+        client.del(`seatlock:${showId}:${seat}`)
+    );
+    await Promise.all(promises);
 
     await Seat.updateMany(
         { showId, seatNumber: { $in: seats }, status: 'locked' },
@@ -65,9 +73,11 @@ export const releaseSeats = async (showId, seats) => {
 };
 
 export const isSeatLocked = async (showId, seatNumbers) => {
-    const lockKey = `seatlock:${showId}:${seatNumbers.sort().join(',')}`;
-    const lockValue = await client.get(lockKey);
-    return lockValue !== null;
+    const promises = seatNumbers.map(seat => 
+        client.get(`seatlock:${showId}:${seat}`)
+    );
+    const results = await Promise.all(promises);
+    return results.some(lockValue => lockValue !== null);
 };
 
 

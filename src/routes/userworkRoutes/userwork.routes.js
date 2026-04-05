@@ -72,6 +72,7 @@ router.delete("/profile", verifyJWT, deleteUserProfile);
 // ============ MOVIE ROUTES ============
 router.get("/movies", getAllMovies);
 router.get("/movies/search", searchMovies);
+
 router.get("/movies/:movieId", getMovieById);
 
 // ============ VENUE ROUTES ============

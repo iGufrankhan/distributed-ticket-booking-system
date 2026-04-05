@@ -36,6 +36,9 @@ router.post("/register", validate(completeSignupSchema), registerUser);      // 
 router.post("/login",loginLimiter, validate(loginSchema), loginUser);
 router.post("/resend-otp",otpLimiter, validate(sendOtpSchema), resendVerificationOtp);
 router.post("/change-password", changePasswordLimiter, verifyJWT, validate(changePasswordSchema), changePassword);
+
+
+
 router.post("/logout", verifyJWT, logoutUser);
 router.post("/refresh-token",verifyJWT, refreshToken);
 

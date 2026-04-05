@@ -4,7 +4,8 @@ import { Booking } from "../models/booking.models.js";
 import Seat from "../models/seat.models.js";
 import { Show } from "../models/show.models.js";
 import { client } from "../Config/redisConfig.js";
-import { releaseSeats } from "../services/booking/seatlock.service.js";
+import { releaseSeats, unlockSeats } from "../services/booking/seatlock.service.js";
+import { generateBookingCode } from "../utils/bookingCodeGenerator.js";
 import mongoose from "mongoose";
 import { sendBookingConfirmationEmail, sendPaymentFailedEmail } from "../services/booking/notification.service.js"; 
 
@@ -119,6 +120,11 @@ paymentQueue.process('check-payment-timeout', async (job) => {
       console.log(`Payment ${paymentId} already processed`);
       return;
     }
+    if(payment.status === 'FAILED') {
+      console.log(`Payment ${paymentId} already failed`);
+      await unlockSeats(showId, seats, payment.userId);
+      return;
+    }
 
     if (new Date() > payment.expiresAt) {
       console.log(`⏱️ Payment timeout for ${paymentId}`);
@@ -127,6 +133,7 @@ paymentQueue.process('check-payment-timeout', async (job) => {
       if (payment.userEmail) {
         await sendPaymentFailedEmail(payment.userEmail, paymentId);
       }
+     await unlockSeats(showId, seats, payment.userId);
     }
   } catch (error) {
     console.error('Error checking payment timeout:', error);
@@ -147,12 +154,6 @@ async function handlePaymentFailure(paymentId, showId, seats, reason) {
   } catch (error) {
     console.error('Error handling payment failure:', error);
   }
-}
-
-function generateBookingCode() {
-  const timestamp = Date.now();
-  const random = Math.random().toString(36).substring(2, 9).toUpperCase();
-  return `BK${timestamp}${random}`;
 }
 
 console.log('✅ Payment worker started and listening for jobs');

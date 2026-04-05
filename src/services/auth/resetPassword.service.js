@@ -12,7 +12,8 @@ import { OTP_EXPIRY_MINUTES } from '../../../utils/constant.js';
 export const sendResetPasswordOtp = async (email) => {
 
     // Check if user exists
-    const user = await User.findOne({ email });
+    const normalizedEmail = email.toLowerCase();
+    const user = await User.findOne({ email: normalizedEmail });
     if (!user) {
         throw new ApiError(404, 'User not found');
     }
@@ -23,10 +24,10 @@ export const sendResetPasswordOtp = async (email) => {
     const expiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000);
     
     // Save OTP to database
-    await OTP.deleteMany({ email, purpose: 'resetPassword' });
-    await OTP.create({ email, otp, purpose: 'resetPassword', expiresAt });
+    await OTP.deleteMany({ email: normalizedEmail, purpose: 'resetPassword' });
+    await OTP.create({ email: normalizedEmail, otp, purpose: 'resetPassword', expiresAt });
     // Send OTP via email
-    await sendOtp(email,
+    await sendOtp(normalizedEmail,
     "resetPassword",
     `Your password reset OTP is ${otp}`);  
     return { message: 'OTP sent successfully' };
@@ -37,8 +38,9 @@ export const sendResetPasswordOtp = async (email) => {
 
 
 export const resetPasswordWithOtp = async (email, otp, newPassword) => {
+  const normalizedEmail = email.toLowerCase();
   const otpRecord = await OTP.findOne({
-    email,
+    email: normalizedEmail,
     otp,
     purpose: "resetPassword",
     expiresAt: { $gt: new Date() },
@@ -49,7 +51,7 @@ export const resetPasswordWithOtp = async (email, otp, newPassword) => {
   const hashedPassword = await bcrypt.hash(newPassword, 10);
   
   const user = await User.findOneAndUpdate(
-    { email },
+    { email: normalizedEmail },
     { password: hashedPassword },
     { new: true }
   );
