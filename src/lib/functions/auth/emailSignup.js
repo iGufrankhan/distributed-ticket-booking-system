@@ -6,7 +6,7 @@ import { ApiError } from "../../../../utils/ApiError.js";
 import {ApiResponse} from "../../../../utils/ApiResponse.js";
 import { sendOtp } from "./sendOtp.js";
 import { EMAIL_FROM, CLIENT_URL } from "../../../../utils/constant.js";
-import {generateAccessToken, generateRefreshToken} from "../../../../utils/token.js";
+import {generateAccessToken, generateRefreshToken, generateVerificationToken, verifyVerificationToken} from "../../../../utils/token.js";
 
 
 export const initiateEmailSignup = async (email) => {
@@ -78,13 +78,31 @@ export const verifyEmailSignupOtp = async (email, otp) => {
 
   await OTP.deleteOne({ _id: otpRecord._id });
 
-  // Return success without token - token will be generated after registration
-  return new ApiResponse(200, { email }, "OTP verified successfully");
+  // Generate a temporary verification token (valid for 10 minutes)
+  const verificationToken = generateVerificationToken(email);
+
+  // Return success with verification token - token required for registration
+  return new ApiResponse(200, { email, verificationToken }, "OTP verified successfully. Use this token to complete registration.");
 };
 
 
 
-export const completeEmailSignup = async (name, email, password) => {
+export const completeEmailSignup = async (name, email, password, verificationToken) => {
+  // Validate verification token first
+  if (!verificationToken) {
+    throw new ApiError(400, "Verification token required. Please verify OTP first.");
+  }
+
+  const decoded = verifyVerificationToken(verificationToken);
+  if (!decoded) {
+    throw new ApiError(400, "Invalid or expired verification token. Please verify OTP again.");
+  }
+
+  // Ensure the email in token matches the registration email
+  if (decoded.email !== email) {
+    throw new ApiError(400, "Email mismatch. Please use the same email you verified.");
+  }
+
   // Check if user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {

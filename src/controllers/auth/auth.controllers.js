@@ -31,8 +31,8 @@ export const verifyOtp = asyncHandler(async (req, res) => {
 
 // Step 3: Complete Registration
 export const registerUser = asyncHandler(async (req, res) => {
-  const { fullName, email, password } = req.body;
-  const result = await completeEmailSignup(fullName, email, password);
+  const { fullName, email, password, verificationToken } = req.body;
+  const result = await completeEmailSignup(fullName, email, password, verificationToken);
 
   if (result?.data?.accessToken && result?.data?.refreshToken) {
     setAuthCookies(res, result.data.accessToken, result.data.refreshToken);

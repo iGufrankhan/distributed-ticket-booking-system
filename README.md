@@ -180,6 +180,42 @@ distributed-ticket-booking-system/
 
 ---
 
+## 🎥 API in Action
+
+Real-world Postman API testing examples showing successful requests and responses:
+
+### Authentication Flow
+
+**Send OTP to Email**
+![Send OTP](./API_REQUEST_RESPONDE_IMAGES/send-otp.png)
+
+**Verify OTP**
+![Verify OTP](./API_REQUEST_RESPONDE_IMAGES/verifyotp.png)
+
+**Register User**
+![Register](./API_REQUEST_RESPONDE_IMAGES/register.png)
+
+**Login User**
+![Login](./API_REQUEST_RESPONDE_IMAGES/login.png)
+
+**Forgot Password**
+![Forgot Password](./API_REQUEST_RESPONDE_IMAGES/forgotpassword.png)
+
+### User Features
+
+**Get User Profile**
+![User Profile](./API_REQUEST_RESPONDE_IMAGES/userprofile.png)
+
+**List All Venues**
+![Get Venues](./API_REQUEST_RESPONDE_IMAGES/getvenue.png)
+
+### Admin Dashboard
+
+**Get All Movies (Admin)**
+![Admin Movies](./API_REQUEST_RESPONDE_IMAGES/movies.png)
+
+---
+
 ## 👥 What Can Users Do?
 
 - Register and log in securely (email/password, Google, GitHub)

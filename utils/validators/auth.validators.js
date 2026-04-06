@@ -24,6 +24,9 @@ export const completeSignupSchema = Joi.object({
       'string.pattern.base': strongPasswordMessage,
       'string.min': 'Password must be at least 8 characters long',
     }),
+  verificationToken: Joi.string().required().messages({
+    'any.required': 'Verification token is required. Please verify OTP first.',
+  }),
 });
 
 export const loginSchema = Joi.object({

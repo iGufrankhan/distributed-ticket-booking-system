@@ -35,4 +35,17 @@ export const verifyRefreshToken = (token) => {
   }
 };
 
+// Verification token for OTP-based signup (10 minutes expiry)
+export const generateVerificationToken = (email) => {
+  return jwt.sign({ email }, ACCESS_TOKEN_SECRET, { expiresIn: "10m" });
+};
+
+export const verifyVerificationToken = (token) => {
+  try {
+    return jwt.verify(token, ACCESS_TOKEN_SECRET);
+  } catch (error) {
+    return null;
+  }
+};
+
 

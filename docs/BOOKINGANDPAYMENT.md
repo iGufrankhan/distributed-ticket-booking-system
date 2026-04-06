@@ -70,4 +70,3 @@ _Both must run together!_
 - ⚡ Fast user experience: async payments
 - ⏰ Auto-release: no stuck seats
 - 🛠️ Admin can monitor and fix issues
-
