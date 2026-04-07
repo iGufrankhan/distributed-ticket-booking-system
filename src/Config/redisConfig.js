@@ -12,13 +12,13 @@ export const client = new Redis({
 });
 
 client.on('error', (err) => {
-    console.error('❌ Redis Client Error:', err.message);
+    console.error(' Redis Client Error:', err.message);
 });
 
 client.on('connect', () => {
-    console.log('✅ Redis connected successfully');
+    console.log(' Redis connected successfully');
 });
 
 client.on('ready', () => {
-    console.log('✅ Redis ready to accept commands');
+    console.log(' Redis ready to accept commands');
 });

@@ -10,6 +10,7 @@ import twoFactorRoutes from "./src/routes/authRoutes/2fa.routes.js";
 import adminRoutes from "./src/routes/admin/admin.routes.js";
 import userworkRoutes from "./src/routes/userworkRoutes/userwork.routes.js";
 import bookingRoutes from "./src/routes/booking/booking.routes.js";
+import paymentRoutes from "./src/routes/payment-gateway/payment-routes.js";
 import { notFoundHandler, errorHandler } from "./src/middlewares/error/error.middleware.js";
 
 // Load environment variables
@@ -42,6 +43,7 @@ app.use("/api/v1/2fa", twoFactorRoutes);
 app.use("/api/v1/admin", adminRoutes);         
 app.use("/api/v1/user", userworkRoutes);       
 app.use("/api/v1/bookings", bookingRoutes);
+app.use("/api/v1/payment", paymentRoutes);
 
 // Terminal middleware: unknown routes and centralized error responses
 app.use(notFoundHandler);

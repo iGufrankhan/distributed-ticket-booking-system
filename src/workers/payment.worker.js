@@ -6,48 +6,60 @@ import { Show } from "../models/show.models.js";
 import { client } from "../Config/redisConfig.js";
 import { releaseSeats, unlockSeats } from "../services/booking/seatlock.service.js";
 import { generateBookingCode } from "../utils/bookingCodeGenerator.js";
-import mongoose from "mongoose";
+import {
+  verifyPaymentSignature,
+  fetchPaymentDetails,
+} from "../services/payment-gateway/payment-service.js";
 import { sendBookingConfirmationEmail, sendPaymentFailedEmail } from "../services/booking/notification.service.js"; 
 
-// Process payment job
+// Process payment verification job (verify Razorpay payment)
 paymentQueue.process('process-payment', async (job) => {
-  const { paymentId, showId, seats } = job.data;
+  const { paymentId, showId, seats, orderId, razorpayPaymentId, signature } = job.data;
 
   try {
     const payment = await Payment.findById(paymentId);
     if (!payment) {
-      throw new Error('Payment not found');
+      throw new Error('Payment record not found in database');
     }
 
     // Check if payment expired
     if (new Date() > payment.expiresAt) {
       payment.status = 'FAILED';
-      payment.failureReason = 'Payment timeout';
+      payment.failureReason = 'Payment timeout - order expired';
       await payment.save();
       await releaseSeats(showId, seats);
       await sendPaymentFailedEmail(payment.userEmail, paymentId);
-      throw new Error('Payment timeout');
+      throw new Error('Payment timeout - order expired');
     }
 
-    // Simulate payment processing (replace with actual payment gateway)
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    const isPaymentSuccessful = Math.random() > 0.1; 
+    // Step 1: Verify payment signature with Razorpay (real payment gateway)
+    const isVerified = await verifyPaymentSignature(orderId, razorpayPaymentId, signature);
 
-    if (!isPaymentSuccessful) {
+    if (!isVerified) {
       payment.status = 'FAILED';
-      payment.failureReason = 'Payment gateway error';
+      payment.failureReason = 'Payment signature verification failed - possible fraud';
       await payment.save();
+      await releaseSeats(showId, seats);
       await sendPaymentFailedEmail(payment.userEmail, paymentId);
-      throw new Error('Payment gateway error');
+      throw new Error('Razorpay signature verification failed');
     }
 
-    // Mark payment as completed
+    // Step 2: Fetch payment details from Razorpay
+    const paymentDetails = await fetchPaymentDetails(razorpayPaymentId);
+    
+    if (!paymentDetails || paymentDetails.status !== 'captured') {
+      throw new Error(`Payment status is not captured, got: ${paymentDetails?.status || 'unknown'}`);
+    }
+
+    // Step 3: Mark payment as completed in database
     payment.status = 'COMPLETED';
+    payment.paymentId = razorpayPaymentId;
+    payment.orderStatus = paymentDetails.status;
+    payment.method = paymentDetails.method;
     payment.completedAt = new Date();
     await payment.save();
 
-    // Create booking
+    // Step 4: Create booking with confirmed status
     const booking = await Booking.create({
       userId: payment.userId,
       showId,
@@ -56,10 +68,10 @@ paymentQueue.process('process-payment', async (job) => {
       status: 'CONFIRMED',
       totalAmount: payment.amount,
       bookingCode: generateBookingCode(),
-      expiresAt: payment.expiresAt 
+      completedAt: new Date()
     });
 
-    // Update seats to booked
+    // Step 5: Update seats to booked permanently
     await Seat.updateMany(
       { showId, seatNumber: { $in: seats } },
       { 
@@ -67,93 +79,122 @@ paymentQueue.process('process-payment', async (job) => {
         bookingId: booking._id,
         lockedBy: null,
         lockedAt: null,
-        isBooked: true
+        lockedUntil: null
       }
     );
 
-    // Update show available seats
+    // Step 6: Update show available seats count
     await Show.findByIdAndUpdate(showId, {
       $inc: { availableSeats: -seats.length }
     });
 
-    // Clear cache
+    // Step 7: Clear Redis cache for this show
     await client.del(`show:${showId}:seats`);
+    await client.del(`show:${showId}:availability`);
 
-    // Send booking confirmation email
+    // Step 8: Send booking confirmation email
     await sendBookingConfirmationEmail({
       _id: booking._id,
+      bookingCode: booking.bookingCode,
       userEmail: payment.userEmail,
+      amount: payment.amount,
+      seats: seats,
+      showId: showId
     });
 
-    console.log(`✅ Payment processed successfully for booking: ${booking.bookingCode}`);
-    return { success: true, bookingId: booking._id };
+    job.progress(100);
+    
+    return { 
+      success: true, 
+      bookingId: booking._id,
+      bookingCode: booking.bookingCode,
+      razorpayPaymentId,
+      message: 'Payment verified and booking confirmed'
+    };
 
   } catch (error) {
-    console.error(`❌ Payment processing failed:`, error.message);
-    await handlePaymentFailure(paymentId, showId, seats, error.message);
-    // Send payment failed email if not already sent
     try {
       const payment = await Payment.findById(paymentId);
-      if (payment && payment.userEmail) {
+      
+      if (payment && payment.status !== 'FAILED') {
+        payment.status = 'FAILED';
+        payment.failureReason = error.message;
+        await payment.save();
+      }
+
+      // Release seats back to available
+      await releaseSeats(showId, seats);
+      
+      // Send payment failed email
+      if (payment?.userEmail) {
         await sendPaymentFailedEmail(payment.userEmail, paymentId);
       }
-    } catch (e) {
-      console.error("Error sending payment failed email:", e.message);
+    } catch (cleanupError) {
+      console.error("Error during payment failure cleanup:", cleanupError.message);
     }
+    
     throw error;
   }
 });
 
-// Check payment timeout job
+// Check payment timeout job - validates if payment was made within time window
 paymentQueue.process('check-payment-timeout', async (job) => {
-  const { paymentId, showId, seats } = job.data;
+  const { paymentId, showId, seats, orderId } = job.data;
 
   try {
     const payment = await Payment.findById(paymentId);
     
     if (!payment) {
-      console.log(`Payment ${paymentId} not found`);
       return;
     }
 
-    if (payment.status !== 'PENDING') {
-      console.log(`Payment ${paymentId} already processed`);
+    if (payment.status === 'COMPLETED') {
       return;
     }
-    if(payment.status === 'FAILED') {
-      console.log(`Payment ${paymentId} already failed`);
+
+    if (payment.status === 'FAILED') {
       await unlockSeats(showId, seats, payment.userId);
       return;
     }
 
+    // Check if payment has exceeded timeout window
     if (new Date() > payment.expiresAt) {
-      console.log(`⏱️ Payment timeout for ${paymentId}`);
-      await handlePaymentFailure(paymentId, showId, seats, 'Payment timeout');
-      // Send payment failed email
+      
+      // Mark as failed
+      payment.status = 'FAILED';
+      payment.failureReason = 'Payment not completed within time window (10 minutes)';
+      await payment.save();
+
+      // Release seats back to available
+      await releaseSeats(showId, seats);
+      
+      // Notify user
       if (payment.userEmail) {
-        await sendPaymentFailedEmail(payment.userEmail, paymentId);
+        await sendPaymentFailedEmail(
+          payment.userEmail, 
+          paymentId,
+          'Your payment was not completed within the allowed time. Your seat reservation has been cancelled.'
+        );
       }
-     await unlockSeats(showId, seats, payment.userId);
     }
+
   } catch (error) {
-    console.error('Error checking payment timeout:', error);
+    console.error("Error in payment timeout check:", error.message);
   }
 });
 
-// Helper functions
-async function handlePaymentFailure(paymentId, showId, seats, reason) {
-  try {
-    await Payment.findByIdAndUpdate(paymentId, {
-      status: 'FAILED',
-      failureReason: reason
-    });
+// Queue event listeners for monitoring
+paymentQueue.on('completed', (job) => {
+  // Job completed successfully
+  console.log(`Payment job completed: ${job.id}`);
+});
 
-    await releaseSeats(showId, seats);
-    
-    console.log(`🔓 Seats released for failed payment: ${paymentId}`);
-  } catch (error) {
-    console.error('Error handling payment failure:', error);
-  }
-}
+paymentQueue.on('failed', (job, err) => {
+  // Job failed
+  console.error(`Payment job failed: ${job.id}, error: ${err.message}`);
+});
 
-console.log('✅ Payment worker started and listening for jobs');
+paymentQueue.on('error', (err) => {
+  // Queue error
+  console.error(`Payment queue error: ${err.message}`);
+});

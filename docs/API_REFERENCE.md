@@ -116,7 +116,179 @@
 
 ---
 
-## 👨‍💼 Admin Endpoints (`/api/v1/admin`) — All require admin authentication
+## � Payment Gateway (`/api/v1/payment`) — All require authentication
+
+### Razorpay Integration (Production-Ready)
+
+**Payment Processing Flow:**
+1. Create order (`POST /create-order`)
+2. Generate payment options (`POST /generate-options`)
+3. Client-side: Open Razorpay payment modal
+4. Verify signature (`POST /verify-signature`)
+5. Fetch details if needed (`GET /details/:paymentId`)
+6. Handle refunds (`POST /refund`)
+
+### Payment Endpoints
+
+#### 1. Create Payment Order (Server-side)
+```
+POST /create-order
+Required: Bearer token (JWT)
+Body: {
+  "amount": 5000,           // Amount in paise (₹50)
+  "currency": "INR",        // Default: INR
+  "receipt": "UNIQUE_ID"    // Unique for each order
+}
+Response: {
+  "id": "order_xxxxx",
+  "entity": "order",
+  "amount": 5000,
+  "amount_paid": 0,
+  "amount_due": 5000,
+  "currency": "INR",
+  "receipt": "UNIQUE_ID",
+  "status": "created",
+  "created_at": 1234567890
+}
+```
+
+#### 2. Generate Payment Options (Client-side)
+```
+POST /generate-options
+Required: Bearer token (JWT)
+Body: {
+  "orderId": "order_xxxxx",          // From create-order response
+  "amount": 5000,
+  "customerDetails": {
+    "name": "John Doe",              // Optional
+    "email": "john@example.com",     // Optional
+    "contact": "+919999999999"       // Optional
+  }
+}
+Response: {
+  "key_id": "rzp_live_xxxxx",
+  "order_id": "order_xxxxx",
+  "amount": 5000,
+  "currency": "INR",
+  "customer": { name, email, contact },
+  "theme": { color: "#F37254" },
+  "description": "Ticket Booking",
+  "prefill": { ... }
+}
+```
+
+#### 3. Verify Payment Signature
+```
+POST /verify-signature
+Required: Bearer token (JWT)
+Body: {
+  "orderId": "order_xxxxx",        // From Razorpay response
+  "paymentId": "pay_xxxxx",        // From Razorpay response
+  "signature": "signature_xxxxx"   // From Razorpay response
+}
+Response: {
+  "verified": true | false,
+  "message": "Payment verified successfully" | "Signature verification failed",
+  "paymentId": "pay_xxxxx"
+}
+```
+
+#### 4. Fetch Payment Details
+```
+GET /details/:paymentId
+Required: Bearer token (JWT)
+Response: {
+  "id": "pay_xxxxx",
+  "entity": "payment",
+  "amount": 5000,
+  "currency": "INR",
+  "status": "captured" | "failed" | "authorized",
+  "method": "card" | "netbanking" | "wallet" | "upi",
+  "description": "Ticket Booking",
+  "amount_refunded": 0,
+  "refund_status": null,
+  "captured": true,
+  "description": "Ticket Booking",
+  "card_id": "card_xxxxx",
+  "bank": null,
+  "wallet": null,
+  "vpa": null,
+  "email": "john@example.com",
+  "contact": "+919999999999",
+  "created_at": 1234567890
+}
+```
+
+#### 5. Process Refund
+```
+POST /refund
+Required: Bearer token (JWT)
+Body: {
+  "paymentId": "pay_xxxxx",    // Payment to refund
+  "amount": 2500               // Optional: for partial refund (in paise)
+}
+Response: {
+  "id": "rfnd_xxxxx",
+  "entity": "refund",
+  "payment_id": "pay_xxxxx",
+  "amount": 5000,              // Full or partial amount
+  "currency": "INR",
+  "receipt": null,
+  "status": "processed",
+  "speed_processed": "instant",
+  "speed_requested": "optimum",
+  "created_at": 1234567890
+}
+```
+
+#### 6. Simulate Payment (Testing)
+```
+POST /process
+Required: Bearer token (JWT)
+Body: {
+  "amount": 5000,
+  "method": "CARD"  // CARD, NETBANKING, WALLET, UPI, EMI
+}
+Response: {
+  "success": true,
+  "paymentId": "sim_xxxxx",
+  "amount": 5000,
+  "method": "CARD",
+  "message": "Payment simulated successfully"
+}
+Note: 90% success rate for testing
+```
+
+---
+
+## ✅ Validation Rules
+
+### Amount Validation
+- **Minimum:** ₹1 (100 paise)
+- **Maximum:** ₹10,000 (1,000,000 paise)
+- **Type:** Integer (no decimals)
+
+### Payment Methods
+- `CARD` - Credit/Debit card
+- `NETBANKING` - Net banking
+- `WALLET` - Digital wallets (Paytm, PhonePe, etc.)
+- `UPI` - Unified Payments Interface
+- `EMI` - Equated Monthly Installments
+
+### Error Codes
+| Status | Code | Message |
+|--------|------|---------|
+| 400 | INVALID_AMOUNT | Amount must be between ₹1 and ₹10,000 |
+| 400 | INVALID_METHOD | Payment method not supported |
+| 401 | INVALID_SIGNATURE | Signature verification failed |
+| 401 | UNAUTHORIZED | JWT token missing or invalid |
+| 404 | ORDER_NOT_FOUND | Payment order not found |
+| 408 | PAYMENT_TIMEOUT | Payment processing timeout |
+| 402 | REFUND_FAILED | Refund could not be processed |
+
+---
+
+## �👨‍💼 Admin Endpoints (`/api/v1/admin`) — All require admin authentication
 
 ### Movie Management
 - `POST /movies` — Create movie
