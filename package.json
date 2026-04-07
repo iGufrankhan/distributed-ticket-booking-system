@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "worker": "node src/workers/index.js"
+    "worker": "node src/workers/index.js",
+    "build": "npm install --production"
   },
   "keywords": [],
   "author": "",
