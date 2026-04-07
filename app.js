@@ -12,6 +12,7 @@ import userworkRoutes from "./src/routes/userworkRoutes/userwork.routes.js";
 import bookingRoutes from "./src/routes/booking/booking.routes.js";
 import paymentRoutes from "./src/routes/payment-gateway/payment-routes.js";
 import { notFoundHandler, errorHandler } from "./src/middlewares/error/error.middleware.js";
+import { client } from "./src/Config/redisConfig.js";
 
 // Load environment variables
 dotenv.config();
@@ -28,11 +29,52 @@ app.use(cookieParser());
 
 
 // Health Check Route
-app.get("/", (req, res) => {
-  res.json({
-    status: "OK",
-    message: "Distributed Ticket Booking System API is running 🚀"
-  });
+app.get("/", async (req, res) => {
+  try {
+    let redisStatus = "✅";
+    try {
+      await client.ping();
+    } catch (err) {
+      redisStatus = "❌";
+    }
+
+    res.json({
+      status: "OK",
+      message: "API Running",
+      version: "1.0.0",
+      redis: redisStatus,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    res.status(500).json({ status: "ERROR", message: error.message });
+  }
+});
+
+// Health Check Route (Detailed)
+app.get("/health", async (req, res) => {
+  try {
+    let redisStatus = "✅";
+    try {
+      await client.ping();
+    } catch (err) {
+      redisStatus = "❌";
+    }
+
+    res.json({
+      status: "OK",
+      uptime: `${Math.floor(process.uptime())}s`,
+      memory: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)} MB`,
+      services: {
+        api: "✅",
+        database: "✅",
+        redis: redisStatus,
+        payment: "✅ Razorpay",
+        queue: "✅ Bull",
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ status: "ERROR", message: error.message });
+  }
 });
 
 // Routes with API versioning

@@ -26,7 +26,8 @@ A modern, production-ready backend API for movie ticket booking. Enjoy real-time
 - 🎬 **Admin Panel**: Manage movies, venues, shows, users, and bookings
 - 🪑 **Seat Locking**: Real-time, atomic seat locks with Redis (5 min hold)
 - 🎟️ **Booking System**: Book, confirm, cancel, and view bookings
-- 💸 **Payment Queue**: Async payment processing with BullMQ, auto-timeout, retries, and failure handling
+- 💸 **Payment Gateway**: Razorpay integration with real payment verification, HMAC-SHA256 signature verification
+- ⏳ **Payment Queue**: Async payment processing with Bull, auto-timeout, retries, and failure handling
 - ⏰ **Auto-Cancellation**: Bookings auto-cancelled and seats released if payment not completed in time
 - 📧 **Email Notifications**: Booking confirmation, payment status, admin/user notifications
 - 📰 **Newsletter**: User subscribe/unsubscribe, admin send newsletters, confirmation emails
@@ -44,7 +45,7 @@ A modern, production-ready backend API for movie ticket booking. Enjoy real-time
 - **Node.js** & **Express**
 - **MongoDB Atlas** (Mongoose)
 - **Redis** (ioredis)
-- **BullMQ** (job queues)
+- **Bull** (Redis job queues)
 - **Nodemailer** (email)
 
 ---
@@ -61,9 +62,17 @@ npm install
 cp .env.example .env
 # Fill in your MongoDB, Redis, and email credentials
 
-# 3. Start servers
-npm start         # API server
-npm run worker    # Payment worker
+# 3. Start servers (choose one option)
+
+# Option A: Integrated (single process - simpler)
+npm start
+
+# Option B: Separate processes (scalable - recommended for production)
+# Terminal 1:
+npm start         # API server on port 5000
+
+# Terminal 2:
+npm run worker    # Payment worker (processes payment jobs)
 ```
 
 ---
@@ -92,16 +101,27 @@ npm run worker    # Payment worker
    npm start
    # Runs on http://localhost:5000
    ```
-6. **Start the payment worker**
+6. **(Optional) Start the payment worker in a separate terminal**
    ```bash
    npm run worker
-   # Processes payment jobs in the background
+   # Processes payment jobs and booking confirmations in the background
+   # For production, run this as a separate process for better scalability
    ```
 
 ---
 
+## � Payment Flow
+1. **Create Order** → `POST /api/v1/payment/create-order`
+2. **Generate Options** → `POST /api/v1/payment/generate-options` (frontend receives Razorpay options)
+3. **User Pays** → Razorpay payment popup (frontend handles)
+4. **Verify Signature** → `POST /api/v1/payment/verify-signature` (server verifies)
+5. **Confirm Booking** → Payment worker processes and confirms booking
+6. **Get Details** → `GET /api/v1/payment/details/:paymentId` (check payment status)
+7. **Refund** → `POST /api/v1/payment/refund` (process refunds)
+
 ## 📚 API Highlights
 - **/api/v1/auth/** — Register, login, 2FA, OAuth
+- **/api/v1/payment/** — Create order, verify signature, get details, refund (Razorpay)
 - **/api/v1/booking/** — Book, confirm, cancel, status
 - **/api/v1/admin/** — Movies, venues, shows, queue, notifications
 - **/api/v1/newsletter/** — Subscribe/unsubscribe
@@ -131,7 +151,7 @@ distributed-ticket-booking-system/
 │   ├── controllers/    # Route logic (auth, admin, booking, user, newsletter)
 │   ├── models/         # MongoDB schemas (User, Movie, Venue, Show, Booking, Payment, Seat, Notification)
 │   ├── services/       # Core logic (seat lock, queue, email, newsletter)
-│   ├── workers/        # Payment processor (BullMQ)
+│   ├── workers/        # Payment processor (Bull queue)
 │   └── middlewares/    # Auth, validation, rate limiting
 │
 ├── utils/              # Helpers, constants, email setup
@@ -139,6 +159,14 @@ distributed-ticket-booking-system/
 ├── ALLAPIS.md          # Complete API reference (all endpoints)
 └── README.md           # Project docs
 ```
+
+### 💳 Payment (Razorpay)
+- `POST   /api/v1/payment/create-order`        — Create Razorpay order
+- `POST   /api/v1/payment/generate-options`    — Generate Razorpay payment options
+- `POST   /api/v1/payment/verify-signature`    — Verify payment signature (HMAC-SHA256)
+- `GET    /api/v1/payment/details/:paymentId`  — Get payment details
+- `POST   /api/v1/payment/refund`              — Process refund
+
 ### 👤 Admin
 - `POST   /api/v1/admin/movies`          — Create movie
 - `POST   /api/v1/admin/venues`          — Create venue
@@ -172,9 +200,13 @@ distributed-ticket-booking-system/
 - 📚 **API Reference:**
    - See [ALLAPIS.md](ALLAPIS.md) for a complete list and details of all API endpoints.
 - 🔑 **Authentication:**
-   - See [AUTH.md](AUTH.md) for registration, login, 2FA, OAuth, and password reset flows.
-- 🎟️ **Booking:**
-   - See [BOOKINGANDPAYMENT.md](BOOKINGANDPAYMENT.md) for booking, payment, seat locking, and user booking management.
+   - See [AUTH_DETAILS.md](AUTH_DETAILS.md) for registration, login, 2FA, OAuth, and password reset flows.
+- 💳 **Payment Gateway:**
+   - See [PAYMENT_GATEWAY.md](PAYMENT_GATEWAY.md) for Razorpay integration, signature verification, testing, and troubleshooting.
+- ⏳ **Queue & Workers:**
+   - See [WORKERS_AND_QUEUE.md](WORKERS_AND_QUEUE.md) for payment job processing, queue architecture, and job lifecycle.
+- 🎟️ **Booking & Payment:**
+   - See [BOOKINGANDPAYMENT.md](BOOKINGANDPAYMENT.md) for booking flows, payment verification, seat locking, and payment processing.
 - 🛡️ **Admin:**
    - See [ADMINWORK.md](ADMINWORK.md) for all admin features, endpoints, and dashboard actions.
 
