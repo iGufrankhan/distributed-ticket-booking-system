@@ -160,6 +160,30 @@ distributed-ticket-booking-system/
 └── README.md           # Project docs
 ```
 
+---
+
+## 📊 Database Schema (ER Diagram)
+
+**Visual ER Diagram:**
+
+![ER Diagram](./API_REQUEST_RESPONDE_IMAGES/ER_DiAGRAM.png)
+
+---
+
+### 📌 Model Relationships
+
+| Model | Relationships | Purpose |
+|-------|---|---|
+| **User** | 1 → Many (Bookings, Notifications, OTP) | Stores user authentication & profile |
+| **Show** | Many → 1 (Movie, Venue) | Links movies to venues with timing |
+| **Booking** | Many → 1 (User, Show, Payment) | Ticket reservations |
+| **Seat** | Many → 1 (Show) | Individual seat tracking & locking |
+| **Payment** | 1 → 1 (Booking) | Razorpay payment records |
+| **Notification** | Many → 1 (User) | Booking/payment alerts |
+| **OTP** | Many → 1 (User) | Email verification codes |
+
+---
+
 ### 💳 Payment (Razorpay)
 - `POST   /api/v1/payment/create-order`        — Create Razorpay order
 - `POST   /api/v1/payment/generate-options`    — Generate Razorpay payment options
@@ -272,8 +296,6 @@ Real-world Postman API testing examples showing successful requests and response
 - **MongoDB**: Atlas (free tier)
 - **Redis**: Redis Cloud (free)
 - **Backend**: Render, Railway, or your VPS
-
----
 
 ## 🐳 Docker Hub
 

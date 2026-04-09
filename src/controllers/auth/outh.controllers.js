@@ -13,6 +13,7 @@ export const googleOAuthController = asyncHandler(async (req, res, next) => {
     const result = await googleOAuthService(code, redirectUri);
     
     // Redirect to frontend with token or send JSON response
+
     res.status(200).json(new ApiResponse(200, result, "Google OAuth successful"));
 });
 

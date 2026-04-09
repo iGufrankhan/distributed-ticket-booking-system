@@ -56,7 +56,7 @@ export const verifyEmailforgotPasswordOtp = async (email, otp) => {
   // Delete OTP after verification
   await OTP.deleteOne({ _id: otpRecord._id });
   
-  // Generate token with userId, not email
+  // Generate token with userId
   const accessToken = generateAccessToken(user._id);
   return new ApiResponse(200, { accessToken }, "OTP verified successfully");
 };
@@ -78,7 +78,7 @@ export const verifyEmailSignupOtp = async (email, otp) => {
 
   await OTP.deleteOne({ _id: otpRecord._id });
 
-  // Generate a temporary verification token (valid for 10 minutes)
+  // Generate a temporary verification token (valid for 5 minutes)
   const verificationToken = generateVerificationToken(email);
 
   // Return success with verification token - token required for registration
