@@ -166,7 +166,7 @@ distributed-ticket-booking-system/
 
 **Visual ER Diagram:**
 
-![ER Diagram](./API_REQUEST_RESPONDE_IMAGES/ER_DiAGRAM.png)
+![ER Diagram](./API_REQUEST_RESPONDE_IMAGES/ER_DIAGRAM.png)
 
 ---
 
