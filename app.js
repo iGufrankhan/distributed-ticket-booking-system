@@ -28,27 +28,28 @@ app.use(cookieParser());
 
 
 
-// Health Check Route
-app.get("/", async (req, res) => {
-  try {
-    let redisStatus = "✅";
-    try {
-      await client.ping();
-    } catch (err) {
-      redisStatus = "❌";
-    }
+// // Health Check Route
+// app.get("/", async (req, res) => {
+//   try {
+//     let redisStatus = "✅";
+//     try {
+//       await client.ping();
+//       console.log("app  is healthy");
+//     } catch (err) {
+//       redisStatus = "❌";
+//     }
 
-    res.json({
-      status: "OK",
-      message: "API Running",
-      version: "1.0.0",
-      redis: redisStatus,
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    res.status(500).json({ status: "ERROR", message: error.message });
-  }
-});
+//     res.json({
+//       status: "OK",
+//       message: "API Running",
+//       version: "1.0.0",
+//       redis: redisStatus,
+//       timestamp: new Date().toISOString(),
+//     });
+//   } catch (error) {
+//     res.status(500).json({ status: "ERROR", message: error.message });
+//   }
+// });
 
 // Health Check Route (Detailed)
 app.get("/health", async (req, res) => {
@@ -56,6 +57,7 @@ app.get("/health", async (req, res) => {
     let redisStatus = "✅";
     try {
       await client.ping();
+      console.log("Redis is healthy health check achha hai");
     } catch (err) {
       redisStatus = "❌";
     }
