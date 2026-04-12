@@ -1,7 +1,7 @@
 // newsletter.routes.js
 import express from "express";
-import { subscribeNewsletter, unsubscribeNewsletter } from "../controllers/newsletter.controllers.js";
-import { verifyJWT } from "../middlewares/auth/auth.middlewares.js";
+import { subscribeNewsletter, unsubscribeNewsletter } from "../../controllers/user/newsletter.controllers.js";
+import { verifyJWT } from "../../middlewares/auth/auth.middlewares.js";
 
 const router = express.Router();
 

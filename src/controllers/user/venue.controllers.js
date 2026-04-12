@@ -16,7 +16,7 @@ export const getAllVenues = asyncHandler(async (req, res) => {
 
 // get venues by city
 export const getVenuesByCity = asyncHandler(async (req, res) => {
-    const { city } = req.query;
+    const { city } = req.params;
     
     if (!city) {
         throw new ApiError(400, "City parameter is required");

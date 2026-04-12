@@ -1,6 +1,5 @@
 
 import Razorpay from "razorpay";
-import crypto from "crypto";
 import { ApiError } from "../../../utils/ApiError.js";
 import {
   validateAmount,
@@ -14,6 +13,39 @@ const razorpayInstance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID || "YOUR_KEY_ID",
   key_secret: process.env.RAZORPAY_KEY_SECRET || "YOUR_KEY_SECRET",
 });
+
+const getRequiredSecret = (envKey) => {
+  const secret = process.env[envKey];
+  if (!secret) {
+    throw new ApiError(500, `${envKey} is not configured`);
+  }
+  return secret;
+};
+
+/**
+ * Validate Razorpay signature using SDK helper
+ * @param {string} body - Signature payload string
+ * @param {string} signature - Razorpay signature
+ * @param {string} secret - Secret used for HMAC validation
+ * @returns {boolean}
+ */
+export const validateWebhookSignature = (body, signature, secret) => {
+  if (!body || !signature || !secret) {
+    throw new ApiError(400, "Body, signature, and secret are required for verification");
+  }
+  return Razorpay.validateWebhookSignature(body, signature, secret);
+};
+
+/**
+ * Validate Razorpay webhook signature using webhook secret
+ * @param {string} rawBody - Raw webhook body string
+ * @param {string} signature - Razorpay webhook signature header value
+ * @returns {boolean}
+ */
+export const verifyRazorpayWebhook = (rawBody, signature) => {
+  const webhookSecret = getRequiredSecret("RAZORPAY_WEBHOOK_SECRET");
+  return validateWebhookSignature(rawBody, signature, webhookSecret);
+};
 
 
 /**
@@ -120,12 +152,8 @@ export const verifyPaymentSignature = (orderId, paymentId, signature) => {
     }
 
     const body = orderId + "|" + paymentId;
-    const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || "YOUR_KEY_SECRET")
-      .update(body)
-      .digest("hex");
-
-    const isValid = expectedSignature === signature;
+  const keySecret = getRequiredSecret("RAZORPAY_KEY_SECRET");
+  const isValid = validateWebhookSignature(body, signature, keySecret);
 
     if (!isValid) {
       throw new ApiError(400, "Payment signature verification failed. Payment may be fraudulent.");

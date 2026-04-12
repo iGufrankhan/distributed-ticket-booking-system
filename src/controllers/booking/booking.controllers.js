@@ -3,6 +3,7 @@ import { checkSeatAvailability } from "../../services/booking/seat.service.js";
 import { Createpayment } from "../../services/booking/payment.service.js";
 import { Booking } from "../../models/booking.models.js";
 import Payment from "../../models/payments.models.js";
+import Seat from "../../models/seat.models.js";
 import { paymentQueue } from "../../services/queue/queue.service.js";
 import { asyncHandler } from "../../../utils/AsyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
@@ -184,5 +185,52 @@ export const cancelBooking = asyncHandler(async (req, res) => {
 
   res.status(200).json(
     new ApiResponse(200, booking, "Booking cancelled and refunded successfully")
+  );
+});
+
+// Get all seats of a show
+export const getAllSeatsOfShow = asyncHandler(async (req, res) => {
+  const { showId } = req.params;
+
+  // Get all seats for the show
+  const seats = await Seat.find({ showId }).sort({ row: 1, column: 1 });
+
+  if (!seats || seats.length === 0) {
+    throw new ApiError(404, "No seats found for this show");
+  }
+
+  // Group seats by row
+  const seatsByRow = {};
+  seats.forEach(seat => {
+    if (!seatsByRow[seat.row]) {
+      seatsByRow[seat.row] = [];
+    }
+    seatsByRow[seat.row].push({
+      seatNumber: seat.seatNumber,
+      row: seat.row,
+      column: seat.column,
+      type: seat.type,
+      price: seat.price,
+      status: seat.status,
+      _id: seat._id,
+      // Only show locked user info if status is locked
+      ...(seat.status.toLowerCase() === 'locked' && { lockedAt: seat.lockedAt })
+    });
+  });
+
+  // Count seats by status
+  const seatStats = {
+    total: seats.length,
+    available: seats.filter(s => s.status.toLowerCase() === 'available').length,
+    locked: seats.filter(s => s.status.toLowerCase() === 'locked').length,
+    booked: seats.filter(s => s.status.toLowerCase() === 'booked').length
+  };
+
+  res.status(200).json(
+    new ApiResponse(200, {
+      showId,
+      seatsByRow,
+      statistics: seatStats
+    }, "Seats fetched successfully")
   );
 });

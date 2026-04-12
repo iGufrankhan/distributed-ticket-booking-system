@@ -4,19 +4,23 @@ import {
   getBookingStatus,
   confirmBooking,
   getUserBookings,
-  cancelBooking
+  cancelBooking,
+  getAllSeatsOfShow
 } from "../../controllers/booking/booking.controllers.js";
 import { verifyJWT } from "../../middlewares/auth/auth.middlewares.js";
 
 const router = express.Router();
 
-// All booking routes require authentication
+// Public routes (no authentication required)
+router.get("/seats/:showId", getAllSeatsOfShow);
+
+// All other booking routes require authentication
 router.use(verifyJWT);
 
-router.post("/book", bookSeats);
+router.post("/book-seats", bookSeats);
 router.post("/confirm", confirmBooking);
-router.get("/status/:bookingId", getBookingStatus);
-router.get("/my-bookings", getUserBookings);
-router.patch("/cancel/:bookingId", cancelBooking);
+router.get("/", getUserBookings);
+router.post("/:bookingId/cancel", cancelBooking);
+router.get("/:bookingId", getBookingStatus);  // This wildcard must be LAST
 
 export default router;

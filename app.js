@@ -11,6 +11,7 @@ import adminRoutes from "./src/routes/admin/admin.routes.js";
 import userworkRoutes from "./src/routes/userworkRoutes/userwork.routes.js";
 import bookingRoutes from "./src/routes/booking/booking.routes.js";
 import paymentRoutes from "./src/routes/payment-gateway/payment-routes.js";
+import newsletterRoutes from "./src/routes/newsletter/newsletter.routes.js";
 import { notFoundHandler, errorHandler } from "./src/middlewares/error/error.middleware.js";
 import { client } from "./src/Config/redisConfig.js";
 
@@ -21,7 +22,15 @@ const app = express();
 
 // Middlewares
 app.use(cors());
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req, res, buf) => {
+      if (req.originalUrl?.startsWith("/api/v1/payment/webhook")) {
+        req.rawBody = Buffer.from(buf);
+      }
+    },
+  })
+);
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
@@ -88,6 +97,8 @@ app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/user", userworkRoutes);       
 app.use("/api/v1/bookings", bookingRoutes);
 app.use("/api/v1/payment", paymentRoutes);
+app.use("/api/v1/newsletter", newsletterRoutes);
+
 
 // Terminal middleware: unknown routes and centralized error responses
 app.use(notFoundHandler);

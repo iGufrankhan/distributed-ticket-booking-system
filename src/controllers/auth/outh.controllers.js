@@ -7,7 +7,7 @@ import {asyncHandler} from '../../../utils/AsyncHandler.js';
 import {ApiResponse} from '../../../utils/ApiResponse.js';
 
 
-export const googleOAuthController = asyncHandler(async (req, res, next) => {
+export const googleOAuthController = asyncHandler(async (req, res) => {
     const {code} = req.query;
     const redirectUri = `${req.protocol}://${req.get('host')}/api/auth/google/callback`;
     const result = await googleOAuthService(code, redirectUri);
@@ -17,7 +17,7 @@ export const googleOAuthController = asyncHandler(async (req, res, next) => {
     res.status(200).json(new ApiResponse(200, result, "Google OAuth successful"));
 });
 
-export const githubOAuthController = asyncHandler(async (req, res, next) => {
+export const githubOAuthController = asyncHandler(async (req, res) => {
     const {code} = req.query;
     const result = await githubOAuthService(code);
     

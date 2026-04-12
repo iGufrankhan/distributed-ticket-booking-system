@@ -1,6 +1,6 @@
 
-import { User } from "../models/user.models.js";
-import { asyncHandler } from "../utils/AsyncHandler.js";
+import { User } from "../../models/user.models.js";
+import { asyncHandler } from "../../../utils/AsyncHandler.js";
 import { sendNewsletterSubscriptionConfirmation } from "../../services/newletter/newsletter.service.js";
 
 // Subscribe

@@ -2,6 +2,10 @@
 
 Complete documentation for the Razorpay payment gateway integration.
 
+**Base URL:** `http://localhost:5000` (Development) | `https://distributed-ticket-booking-system-api.onrender.com` (Production)
+
+**API Version Prefix:** `/api/v1`
+
 ---
 
 ## 🚀 Quick Start
@@ -405,7 +409,17 @@ const refundPayment = async (paymentId, amount = null) => {
 
 ### 3. Simulate Payment (Without Razorpay)
 ```bash
+# Development (localhost)
 curl -X POST http://localhost:5000/api/v1/payment/process \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 5000,
+    "method": "CARD"
+  }'
+
+# Production (Render)
+curl -X POST https://distributed-ticket-booking-system-api.onrender.com/api/v1/payment/process \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{

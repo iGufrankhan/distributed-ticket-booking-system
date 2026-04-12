@@ -5,6 +5,7 @@ import {
   createPaymentOrder,
   generatePaymentOptions,
   verifyPaymentSignature,
+  verifyRazorpayWebhook,
   fetchPaymentDetails,
   refundPayment,
 } from "../../services/payment-gateway/payment-service.js";
@@ -78,6 +79,36 @@ export const verifyPaymentSignatureController = asyncHandler(async (req, res) =>
 
   return res.status(200).json(
     new ApiResponse(200, { verified: isValid }, "Payment signature verified successfully")
+  );
+});
+
+/**
+ * Verify Razorpay webhook signature
+ * POST /api/v1/payment/webhook
+ */
+export const verifyPaymentWebhookController = asyncHandler(async (req, res) => {
+  const rawBody = req.rawBody?.toString("utf8") || "";
+  const signature = req.headers["x-razorpay-signature"];
+
+  if (!rawBody) {
+    throw new ApiError(400, "Raw webhook payload is required");
+  }
+
+  if (!signature || typeof signature !== "string") {
+    throw new ApiError(400, "x-razorpay-signature header is required");
+  }
+
+  const verified = verifyRazorpayWebhook(rawBody, signature);
+
+  let payload = {};
+  try {
+    payload = JSON.parse(rawBody);
+  } catch (error) {
+    throw new ApiError(400, "Invalid webhook JSON payload");
+  }
+
+  return res.status(200).json(
+    new ApiResponse(200, { verified, event: payload?.event || null }, "Webhook verified successfully")
   );
 });
 

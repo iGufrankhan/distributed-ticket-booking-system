@@ -2,6 +2,7 @@ import { ApiError } from "../../../utils/ApiError.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { asyncHandler } from "../../../utils/AsyncHandler.js";
 import { User } from "../../models/user.models.js";
+import bcrypt from "bcryptjs";
 
 export const getUserprofile = asyncHandler(async (req, res) => {
     const userId = req.user._id;
@@ -43,7 +44,13 @@ export const deleteUserProfile = asyncHandler(async (req, res) => {
         throw new ApiError(404, "User not found");
     }
     
-    await User.findByIdAndDelete(userId);
+    const { password } = req.body;
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+        throw new ApiError(401, "Invalid password. Cannot delete account.");
+    }
+
+    await User.findByIdAndUpdate(userId, { deletedAt: new Date() });
     
     return res.status(200).json(new ApiResponse(200, "User profile deleted successfully"));
 });

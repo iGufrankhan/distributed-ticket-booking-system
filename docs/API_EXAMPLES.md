@@ -2,6 +2,10 @@
 
 Complete working examples for all major endpoints with real requests and responses. See [API_REFERENCE.md](./API_REFERENCE.md) for the full endpoint list.
 
+**Base URL:** `http://localhost:5000` (Development) | `https://distributed-ticket-booking-system-api.onrender.com` (Production)
+
+**API Version Prefix:** `/api/v1`
+
 ---
 
 ## 🔐 Authentication Endpoints

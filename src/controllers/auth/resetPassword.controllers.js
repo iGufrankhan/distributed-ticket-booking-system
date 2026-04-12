@@ -6,13 +6,13 @@ import {sendResetPasswordOtp, resetPasswordWithOtp} from '../../services/auth/re
 
 
 
-export const sendResetPasswordOtpController = asyncHandler(async (req, res, next) => {
+export const sendResetPasswordOtpController = asyncHandler(async (req, res) => {
     const {email} = req.body;
     const result = await sendResetPasswordOtp(email);
     res.status(200).json(new ApiResponse(200, "OTP sent successfully", result));
 });
 
-export const resetPasswordWithOtpController = asyncHandler(async (req, res, next) => {
+export const resetPasswordWithOtpController = asyncHandler(async (req, res) => {
     const {email, otp, newPassword} = req.body;
     const result = await resetPasswordWithOtp(email, otp, newPassword);
     res.status(200).json(new ApiResponse(200, "Password reset successful", result));

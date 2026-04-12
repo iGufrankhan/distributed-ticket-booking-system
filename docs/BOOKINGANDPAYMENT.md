@@ -2,6 +2,10 @@
 
 Complete guide to distributed seat locking, payment processing, and queue management.
 
+**Base URL:** `http://localhost:5000` (Development) | `https://distributed-ticket-booking-system-api.onrender.com` (Production)
+
+**API Version Prefix:** `/api/v1`
+
 ---
 
 ## 🚀 System Components

@@ -4,6 +4,7 @@ import {
   createPaymentOrderController,
   generatePaymentOptionsController,
   verifyPaymentSignatureController,
+  verifyPaymentWebhookController,
   fetchPaymentDetailsController,
   refundPaymentController,
 } from "../../controllers/payment-gateway/payment-controllers.js";
@@ -44,6 +45,12 @@ router.post("/generate-options", verifyJWT, generatePaymentOptionsController);
  * @returns {Object} Verification result { verified: boolean }
  */
 router.post("/verify-signature", verifyJWT, verifyPaymentSignatureController);
+
+/**
+ * Verify Razorpay webhook signature (server to server)
+ * POST /api/v1/payment/webhook
+ */
+router.post("/webhook", verifyPaymentWebhookController);
 
 /**
  * Fetch payment details
