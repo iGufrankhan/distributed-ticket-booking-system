@@ -19,6 +19,28 @@ A modern, production-ready backend API for movie ticket booking. Enjoy real-time
 
 ---
 
+## 📊 Database Schema (ER Diagram)
+
+**Visual ER Diagram:**
+
+![ER Diagram](./API_REQUEST_RESPONDE_IMAGES/ER_DIAGRAM.png)
+
+---
+
+### 📌 Model Relationships
+
+| Model | Relationships | Purpose |
+|-------|---|---|
+| **User** | 1 → Many (Bookings, Notifications, OTP) | Stores user authentication & profile |
+| **Show** | Many → 1 (Movie, Venue) | Links movies to venues with timing |
+| **Booking** | Many → 1 (User, Show, Payment) | Ticket reservations |
+| **Seat** | Many → 1 (Show) | Individual seat tracking & locking |
+| **Payment** | 1 → 1 (Booking) | Razorpay payment records |
+| **Notification** | Many → 1 (User) | Booking/payment alerts |
+| **OTP** | Many → 1 (User) | Email verification codes |
+
+---
+
 ## 🌟 All Features at a Glance
 
 - 🔐 **Authentication**: JWT, OAuth (Google/GitHub), 2FA (OTP/TOTP), password reset, email verification
@@ -37,6 +59,42 @@ A modern, production-ready backend API for movie ticket booking. Enjoy real-time
 - 🧑‍💻 **Role-Based Access**: Secure admin/user separation
 - 🧪 **Testing Ready**: Easy to test all flows (auth, booking, payment, admin)
 - 🌐 **Deployment Ready**: Works on Render, Railway, or any VPS
+
+---
+
+## 🎥 API in Action
+
+Real-world Postman API testing examples showing successful requests and responses:
+
+### Authentication Flow
+
+**Send OTP to Email**
+![Send OTP](./API_REQUEST_RESPONDE_IMAGES/send-otp.png)
+
+**Verify OTP**
+![Verify OTP](./API_REQUEST_RESPONDE_IMAGES/verifyotp.png)
+
+**Register User**
+![Register](./API_REQUEST_RESPONDE_IMAGES/register.png)
+
+**Login User**
+![Login](./API_REQUEST_RESPONDE_IMAGES/login.png)
+
+**Forgot Password**
+![Forgot Password](./API_REQUEST_RESPONDE_IMAGES/forgotpassword.png)
+
+### User Features
+
+**Get User Profile**
+![User Profile](./API_REQUEST_RESPONDE_IMAGES/userprofile.png)
+
+**List All Venues**
+![Get Venues](./API_REQUEST_RESPONDE_IMAGES/getvenue.png)
+
+### Admin Dashboard
+
+**Get All Movies (Admin)**
+![Admin Movies](./API_REQUEST_RESPONDE_IMAGES/movies.png)
 
 ---
 
@@ -162,28 +220,6 @@ distributed-ticket-booking-system/
 
 ---
 
-## 📊 Database Schema (ER Diagram)
-
-**Visual ER Diagram:**
-
-![ER Diagram](./API_REQUEST_RESPONDE_IMAGES/ER_DIAGRAM.png)
-
----
-
-### 📌 Model Relationships
-
-| Model | Relationships | Purpose |
-|-------|---|---|
-| **User** | 1 → Many (Bookings, Notifications, OTP) | Stores user authentication & profile |
-| **Show** | Many → 1 (Movie, Venue) | Links movies to venues with timing |
-| **Booking** | Many → 1 (User, Show, Payment) | Ticket reservations |
-| **Seat** | Many → 1 (Show) | Individual seat tracking & locking |
-| **Payment** | 1 → 1 (Booking) | Razorpay payment records |
-| **Notification** | Many → 1 (User) | Booking/payment alerts |
-| **OTP** | Many → 1 (User) | Email verification codes |
-
----
-
 ### 💳 Payment (Razorpay)
 - `POST   /api/v1/payment/create-order`        — Create Razorpay order
 - `POST   /api/v1/payment/generate-options`    — Generate Razorpay payment options
@@ -236,41 +272,6 @@ distributed-ticket-booking-system/
 
 ---
 
-## 🎥 API in Action
-
-Real-world Postman API testing examples showing successful requests and responses:
-
-### Authentication Flow
-
-**Send OTP to Email**
-![Send OTP](./API_REQUEST_RESPONDE_IMAGES/send-otp.png)
-
-**Verify OTP**
-![Verify OTP](./API_REQUEST_RESPONDE_IMAGES/verifyotp.png)
-
-**Register User**
-![Register](./API_REQUEST_RESPONDE_IMAGES/register.png)
-
-**Login User**
-![Login](./API_REQUEST_RESPONDE_IMAGES/login.png)
-
-**Forgot Password**
-![Forgot Password](./API_REQUEST_RESPONDE_IMAGES/forgotpassword.png)
-
-### User Features
-
-**Get User Profile**
-![User Profile](./API_REQUEST_RESPONDE_IMAGES/userprofile.png)
-
-**List All Venues**
-![Get Venues](./API_REQUEST_RESPONDE_IMAGES/getvenue.png)
-
-### Admin Dashboard
-
-**Get All Movies (Admin)**
-![Admin Movies](./API_REQUEST_RESPONDE_IMAGES/movies.png)
-
----
 
 ## 👥 What Can Users Do?
 
