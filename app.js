@@ -40,12 +40,12 @@ app.use(cookieParser());
 // Health Check Route
 app.get("/", async (req, res) => {
   try {
-    let redisStatus = "✅";
+    let redisStatus = "";
     try {
       await client.ping();
       console.log("app  is healthy");
     } catch (err) {
-      redisStatus = "❌";
+      redisStatus = "";
     }
 
     res.json({
@@ -63,12 +63,12 @@ app.get("/", async (req, res) => {
 // Health Check Route (Detailed)
 app.get("/health", async (req, res) => {
   try {
-    let redisStatus = "✅";
+    let redisStatus = "";
     try {
       await client.ping();
       console.log("Redis is healthy health check achha hai");
     } catch (err) {
-      redisStatus = "❌";
+      redisStatus = "";
     }
 
     res.json({
@@ -76,11 +76,11 @@ app.get("/health", async (req, res) => {
       uptime: `${Math.floor(process.uptime())}s`,
       memory: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)} MB`,
       services: {
-        api: "✅",
-        database: "✅",
+        api: "",
+        database: "",
         redis: redisStatus,
-        payment: "✅ Razorpay",
-        queue: "✅ Bull",
+        payment: " Razorpay",
+        queue: " Bull",
       },
     });
   } catch (error) {

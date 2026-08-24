@@ -99,6 +99,33 @@ export const getBookingStatus = asyncHandler(async (req, res) => {
   );
 });
 
+
+export const confirmBookingPayment =asyncHandler(async(req,res)=>{
+
+    const { paymentId, showId, seats, orderId, razorpayPaymentId, signature } = req.body;
+
+    if(!paymentId || !showId || !seats || !orderId || !razorpayPaymentId || !signature){
+        throw new ApiError(400, "Missing required fields for payment confirmation");
+    }
+
+   await paymentQueue.add('process-payment', {
+    paymentId,
+    showId,
+    seats,
+    orderId,
+    razorpayPaymentId,
+    signature
+  });
+
+
+   res.status(200).json(
+    new ApiResponse(200, null, "Payment received. Your booking is being processed and you will receive an email shortly.")
+  );
+
+
+
+});
+
 export const confirmBooking = asyncHandler(async (req, res) => {
   const { paymentId } = req.body;
   const userId = req.user._id;

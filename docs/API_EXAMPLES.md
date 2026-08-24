@@ -1,4 +1,4 @@
-# 📚 API Request/Response Examples
+#  API Request/Response Examples
 
 Complete working examples for all major endpoints with real requests and responses. See [API_REFERENCE.md](./API_REFERENCE.md) for the full endpoint list.
 
@@ -8,7 +8,7 @@ Complete working examples for all major endpoints with real requests and respons
 
 ---
 
-## 🔐 Authentication Endpoints
+##  Authentication Endpoints
 
 ### 1. Send OTP (Step 1)
 
@@ -256,7 +256,7 @@ Content-Type: application/json
 
 ---
 
-## 🔑 Common Reference
+##  Common Reference
 
 **Authorization Header Format:**
 ```

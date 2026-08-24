@@ -20,11 +20,11 @@ export const paymentQueue = new Queue("payment-queue", {
 });
 
 paymentQueue.on('completed', (job) => {
-  console.log(`✅ Job ${job.id} completed`);
+  console.log(` Job ${job.id} completed`);
 });
 
 paymentQueue.on('failed', (job, err) => {
-  console.log(`❌ Job ${job.id} failed:`, err.message);
+  console.log(` Job ${job.id} failed:`, err.message);
 });
 
 console.log('Payment queue initialized');

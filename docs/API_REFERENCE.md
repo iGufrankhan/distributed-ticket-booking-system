@@ -1,4 +1,4 @@
-# 🎬 Complete API Reference
+#  Complete API Reference
 
 **Base URL:** `http://localhost:5000` (Development) | `https://distributed-ticket-booking-system-api.onrender.com` (Production)
 
@@ -8,12 +8,12 @@
 
 ---
 
-## 🏥 Health Check
+##  Health Check
 - `GET /` — API health status
 
 ---
 
-## 🔐 Authentication (`/api/v1/auth`)
+##  Authentication (`/api/v1/auth`)
 
 ### Email-Based Authentication
 - `POST /send-otp` — Send OTP to email (Step 1)
@@ -38,7 +38,7 @@
 
 ---
 
-## 🔐 Two-Factor Authentication (`/api/v1/2fa`)
+##  Two-Factor Authentication (`/api/v1/2fa`)
 
 - `POST /enable/request` — Request 2FA setup **(auth required)**
 - `POST /enable/verify` — Verify OTP and enable 2FA **(auth required)**
@@ -47,14 +47,14 @@
 
 ---
 
-## 📰 Newsletter (`/api/v1/newsletter`)
+##  Newsletter (`/api/v1/newsletter`)
 
 - `POST /subscribe` — Subscribe to newsletter **(auth required)**
 - `POST /unsubscribe` — Unsubscribe from newsletter **(auth required)**
 
 ---
 
-## 👤 User Endpoints (`/api/v1/user`)
+##  User Endpoints (`/api/v1/user`)
 
 ### Profile Management
 - `GET /profile` — Get user profile **(auth required)**
@@ -105,7 +105,7 @@
 
 ---
 
-## 🎟️ Bookings (`/api/v1/bookings`) — All require authentication
+##  Bookings (`/api/v1/bookings`) — All require authentication
 
 ### Booking Operations
 - `POST /book` — Create booking (lock seats for 5 mins)
@@ -261,7 +261,7 @@ Note: 90% success rate for testing
 
 ---
 
-## ✅ Validation Rules
+##  Validation Rules
 
 ### Amount Validation
 - **Minimum:** ₹1 (100 paise)
@@ -288,7 +288,7 @@ Note: 90% success rate for testing
 
 ---
 
-## �👨‍💼 Admin Endpoints (`/api/v1/admin`) — All require admin authentication
+## � Admin Endpoints (`/api/v1/admin`) — All require admin authentication
 
 ### Movie Management
 - `POST /movies` — Create movie
@@ -351,7 +351,7 @@ Note: 90% success rate for testing
 
 ---
 
-## 📋 Common Query Parameters
+##  Common Query Parameters
 
 ### Pagination
 - `page=1` — Page number (default: 1)
@@ -371,7 +371,7 @@ Note: 90% success rate for testing
 
 ---
 
-## 🔄 Request/Response Format
+##  Request/Response Format
 
 ### Success Response (200-201)
 ```json
@@ -396,7 +396,7 @@ Note: 90% success rate for testing
 
 ---
 
-## 🔑 Authentication Flow
+##  Authentication Flow
 
 1. **Register**: `POST /send-otp` → `POST /verify-otp` → `POST /register` (with verificationToken)
 2. **Login**: `POST /login` → Get accessToken & refreshToken
@@ -405,7 +405,7 @@ Note: 90% success rate for testing
 
 ---
 
-## ⚡ Rate Limiting
+##  Rate Limiting
 
 - **OTP endpoints**: 3 requests per 5 minutes
 - **Login endpoint**: 5 attempts per 10 minutes
@@ -414,7 +414,7 @@ Note: 90% success rate for testing
 
 ---
 
-## 📅 Status Codes
+##  Status Codes
 
 | Code | Meaning |
 |------|---------|

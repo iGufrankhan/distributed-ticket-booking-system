@@ -1,4 +1,4 @@
-# 💳 Payment Gateway Integration Guide
+#  Payment Gateway Integration Guide
 
 Complete documentation for the Razorpay payment gateway integration.
 
@@ -8,7 +8,7 @@ Complete documentation for the Razorpay payment gateway integration.
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Install Dependencies
 ```bash
@@ -44,12 +44,12 @@ MAX_BOOKING_AMOUNT=1000000       # ₹10,000 in paise
 ### 4. Test Integration
 ```bash
 npm start
-# Check console for: "✅ Payment workers registered"
+# Check console for: " Payment workers registered"
 ```
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ### Component Breakdown
 
@@ -121,7 +121,7 @@ npm start
 
 ---
 
-## 📋 File Structure
+##  File Structure
 
 ```
 src/
@@ -146,7 +146,7 @@ utils/
 
 ---
 
-## 🔐 Security Implementation
+##  Security Implementation
 
 ### 1. Signature Verification (HMAC-SHA256)
 ```javascript
@@ -202,7 +202,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ---
 
-## 🔄 Request/Response Flow
+##  Request/Response Flow
 
 ### Payment Creation Flow
 ```
@@ -237,7 +237,7 @@ CLIENT                          SERVER                      RAZORPAY
 
 ---
 
-## 💡 Usage Examples
+##  Usage Examples
 
 ### Example 1: Complete Payment Flow (React)
 ```javascript
@@ -392,7 +392,7 @@ const refundPayment = async (paymentId, amount = null) => {
 
 ---
 
-## 🧪 Testing Payment Gateway
+##  Testing Payment Gateway
 
 ### 1. Test Card Numbers (Razorpay Sandbox)
 
@@ -432,7 +432,7 @@ curl -X POST https://distributed-ticket-booking-system-api.onrender.com/api/v1/p
 
 ---
 
-## ⚠️ Common Issues & Solutions
+##  Common Issues & Solutions
 
 ### Issue 1: "Cannot find module razorpay"
 ```bash
@@ -467,20 +467,20 @@ RAZORPAY_KEY_SECRET=xxxxx
 
 ---
 
-## 📊 Monitoring & Debugging
+##  Monitoring & Debugging
 
 ### Enable Detailed Logging
 ```javascript
 // In payment-service.js
 const createPaymentOrder = async (amount, currency, receipt) => {
-  console.log('📝 Creating order:', { amount, currency, receipt });
+  console.log(' Creating order:', { amount, currency, receipt });
   
   try {
     const order = await razorpayInstance.orders.create({...});
-    console.log('✅ Order created:', order.id);
+    console.log(' Order created:', order.id);
     return order;
   } catch (error) {
-    console.error('❌ Order creation failed:', error.message);
+    console.error(' Order creation failed:', error.message);
     throw error;
   }
 };
@@ -494,7 +494,7 @@ const createPaymentOrder = async (amount, currency, receipt) => {
 
 ---
 
-## 🎯 Production Checklist
+##  Production Checklist
 
 - [ ] Switch to **Live Keys** in .env
 - [ ] Test with real payment (₹1-₹10 minimum)
@@ -509,7 +509,7 @@ const createPaymentOrder = async (amount, currency, receipt) => {
 
 ---
 
-## 📖 Additional Resources
+##  Additional Resources
 
 - [Razorpay Documentation](https://razorpay.com/docs)
 - [Razorpay API Reference](https://razorpay.com/docs/api)

@@ -7,6 +7,7 @@ import {
   verifyPaymentWebhookController,
   fetchPaymentDetailsController,
   refundPaymentController,
+  simulatePaymentController
 } from "../../controllers/payment-gateway/payment-controllers.js";
 
 const router = Router();
@@ -69,5 +70,6 @@ router.get("/details/:paymentId", verifyJWT, fetchPaymentDetailsController);
  */
 router.post("/refund", verifyJWT, refundPaymentController);
 
+router.post("/process",verifyJWT,simulatePaymentController);
 
 export default router;

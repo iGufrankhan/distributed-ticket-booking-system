@@ -70,7 +70,7 @@ export const getShowsByVenueAndCity = asyncHandler(async (req, res) => {
   );
 });
 
-// Get shows by movie - THIS WILL SHOW ALL VENUES FOR SAME MOVIE ✅
+// Get shows by movie - THIS WILL SHOW ALL VENUES FOR SAME MOVIE 
 export const getShowsByMovie = asyncHandler(async (req, res) => {
   const { movieId } = req.params;
   const { city, date, page = 1, limit = 20 } = req.query;

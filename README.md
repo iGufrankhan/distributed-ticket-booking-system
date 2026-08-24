@@ -1,4 +1,4 @@
-# 🎬✨ Distributed Ticket Booking System
+#  Distributed Ticket Booking System
 <p align="center">
    <a href="https://distributed-ticket-booking-system-1.onrender.com" target="_blank">
       <img src="https://img.shields.io/badge/Live%20Demo-Online-brightgreen?style=for-the-badge&logo=render" alt="Live Demo"/>
@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-   <b>🌐 <a href="https://distributed-ticket-booking-system-1.onrender.com" target="_blank">View the API Live on Render</a></b>
+   <b> <a href="https://distributed-ticket-booking-system-1.onrender.com" target="_blank">View the API Live on Render</a></b>
 </p>
 
 ![Node.js](https://img.shields.io/badge/Node.js-v22.17.1-green)
@@ -19,7 +19,7 @@ A modern, production-ready backend API for movie ticket booking. Enjoy real-time
 
 ---
 
-## 📊 Database Schema (ER Diagram)
+##  Database Schema (ER Diagram)
 
 **Visual ER Diagram:**
 
@@ -27,7 +27,7 @@ A modern, production-ready backend API for movie ticket booking. Enjoy real-time
 
 ---
 
-### 📌 Model Relationships
+###  Model Relationships
 
 | Model | Relationships | Purpose |
 |-------|---|---|
@@ -41,28 +41,28 @@ A modern, production-ready backend API for movie ticket booking. Enjoy real-time
 
 ---
 
-## 🌟 All Features at a Glance
+##  All Features at a Glance
 
-- 🔐 **Authentication**: JWT, OAuth (Google/GitHub), 2FA (OTP/TOTP), password reset, email verification
-- 👤 **User Management**: Register, login, profile, secure sessions
-- 🎬 **Admin Panel**: Manage movies, venues, shows, users, and bookings
-- 🪑 **Seat Locking**: Real-time, atomic seat locks with Redis (5 min hold)
-- 🎟️ **Booking System**: Book, confirm, cancel, and view bookings
-- 💸 **Payment Gateway**: Razorpay integration with real payment verification, HMAC-SHA256 signature verification
-- ⏳ **Payment Queue**: Async payment processing with Bull, auto-timeout, retries, and failure handling
-- ⏰ **Auto-Cancellation**: Bookings auto-cancelled and seats released if payment not completed in time
-- 📧 **Email Notifications**: Booking confirmation, payment status, admin/user notifications
-- 📰 **Newsletter**: User subscribe/unsubscribe, admin send newsletters, confirmation emails
-- 🔎 **Search & Filter**: Find shows by movie, city, date, genre, venue
-- 🛠️ **Admin Tools**: Queue monitoring, retry/clean jobs, send notifications, analytics endpoints
-- 📊 **Dashboard Ready**: All endpoints for building admin/user dashboards
-- 🧑‍💻 **Role-Based Access**: Secure admin/user separation
-- 🧪 **Testing Ready**: Easy to test all flows (auth, booking, payment, admin)
-- 🌐 **Deployment Ready**: Works on Render, Railway, or any VPS
+-  **Authentication**: JWT, OAuth (Google/GitHub), 2FA (OTP/TOTP), password reset, email verification
+-  **User Management**: Register, login, profile, secure sessions
+-  **Admin Panel**: Manage movies, venues, shows, users, and bookings
+-  **Seat Locking**: Real-time, atomic seat locks with Redis (5 min hold)
+-  **Booking System**: Book, confirm, cancel, and view bookings
+-  **Payment Gateway**: Razorpay integration with real payment verification, HMAC-SHA256 signature verification
+-  **Payment Queue**: Async payment processing with Bull, auto-timeout, retries, and failure handling
+-  **Auto-Cancellation**: Bookings auto-cancelled and seats released if payment not completed in time
+-  **Email Notifications**: Booking confirmation, payment status, admin/user notifications
+-  **Newsletter**: User subscribe/unsubscribe, admin send newsletters, confirmation emails
+-  **Search & Filter**: Find shows by movie, city, date, genre, venue
+-  **Admin Tools**: Queue monitoring, retry/clean jobs, send notifications, analytics endpoints
+-  **Dashboard Ready**: All endpoints for building admin/user dashboards
+-  **Role-Based Access**: Secure admin/user separation
+-  **Testing Ready**: Easy to test all flows (auth, booking, payment, admin)
+-  **Deployment Ready**: Works on Render, Railway, or any VPS
 
 ---
 
-## 🎥 API in Action
+##  API in Action
 
 Real-world Postman API testing examples showing successful requests and responses:
 
@@ -98,7 +98,7 @@ Real-world Postman API testing examples showing successful requests and response
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Node.js** & **Express**
 - **MongoDB Atlas** (Mongoose)
@@ -108,7 +108,7 @@ Real-world Postman API testing examples showing successful requests and response
 
 ---
 
-## ⚡ Quick Start
+##  Quick Start
 
 ```bash
 # 1. Clone & install dependencies
@@ -135,7 +135,7 @@ npm run worker    # Payment worker (processes payment jobs)
 
 ---
 
-## 🏗️ Local Installation & Setup
+##  Local Installation & Setup
 
 1. **Clone the repository**
    ```bash
@@ -177,7 +177,7 @@ npm run worker    # Payment worker (processes payment jobs)
 6. **Get Details** → `GET /api/v1/payment/details/:paymentId` (check payment status)
 7. **Refund** → `POST /api/v1/payment/refund` (process refunds)
 
-## 📚 API Highlights
+##  API Highlights
 - **/api/v1/auth/** — Register, login, 2FA, OAuth
 - **/api/v1/payment/** — Create order, verify signature, get details, refund (Razorpay)
 - **/api/v1/booking/** — Book, confirm, cancel, status
@@ -186,7 +186,7 @@ npm run worker    # Payment worker (processes payment jobs)
 
 ---
 
-## 🧩 How It Works
+##  How It Works
 
 ```
 flowchart TD
@@ -200,7 +200,7 @@ flowchart TD
 
 ---
 
-## 📁 Folder Structure
+##  Folder Structure
 
 ```
 distributed-ticket-booking-system/
@@ -220,14 +220,14 @@ distributed-ticket-booking-system/
 
 ---
 
-### 💳 Payment (Razorpay)
+###  Payment (Razorpay)
 - `POST   /api/v1/payment/create-order`        — Create Razorpay order
 - `POST   /api/v1/payment/generate-options`    — Generate Razorpay payment options
 - `POST   /api/v1/payment/verify-signature`    — Verify payment signature (HMAC-SHA256)
 - `GET    /api/v1/payment/details/:paymentId`  — Get payment details
 - `POST   /api/v1/payment/refund`              — Process refund
 
-### 👤 Admin
+###  Admin
 - `POST   /api/v1/admin/movies`          — Create movie
 - `POST   /api/v1/admin/venues`          — Create venue
 - `POST   /api/v1/admin/shows`           — Create show
@@ -237,11 +237,11 @@ distributed-ticket-booking-system/
 - `GET    /api/v1/booking/status/:id`    — Booking/payment status
 - `GET    /api/v1/booking/my-bookings`   — User's bookings
 
-### 📰 Newsletter
+###  Newsletter
 - `POST   /api/v1/newsletter/subscribe`   — Subscribe to newsletter
 - `POST   /api/v1/newsletter/unsubscribe` — Unsubscribe from newsletter
 
-### 🙋‍♂️ User
+###  User
 - `GET    /api/v1/user/profile`           — Get user profile
 - `PATCH  /api/v1/user/profile`           — Update user profile
 - `GET    /api/v1/user/shows`             — List all shows (with filters)
@@ -255,25 +255,25 @@ distributed-ticket-booking-system/
 
 ---
 
-## 📖 Documentation
+##  Documentation
 
-- 📚 **API Reference:**
+-  **API Reference:**
    - See [ALLAPIS.md](ALLAPIS.md) for a complete list and details of all API endpoints.
-- 🔑 **Authentication:**
+-  **Authentication:**
    - See [AUTH_DETAILS.md](AUTH_DETAILS.md) for registration, login, 2FA, OAuth, and password reset flows.
-- 💳 **Payment Gateway:**
+-  **Payment Gateway:**
    - See [PAYMENT_GATEWAY.md](PAYMENT_GATEWAY.md) for Razorpay integration, signature verification, testing, and troubleshooting.
-- ⏳ **Queue & Workers:**
+-  **Queue & Workers:**
    - See [WORKERS_AND_QUEUE.md](WORKERS_AND_QUEUE.md) for payment job processing, queue architecture, and job lifecycle.
-- 🎟️ **Booking & Payment:**
+-  **Booking & Payment:**
    - See [BOOKINGANDPAYMENT.md](BOOKINGANDPAYMENT.md) for booking flows, payment verification, seat locking, and payment processing.
-- 🛡️ **Admin:**
+-  **Admin:**
    - See [ADMINWORK.md](ADMINWORK.md) for all admin features, endpoints, and dashboard actions.
 
 ---
 
 
-## 👥 What Can Users Do?
+##  What Can Users Do?
 
 - Register and log in securely (email/password, Google, GitHub)
 - Enable 2FA for extra security
@@ -287,18 +287,36 @@ distributed-ticket-booking-system/
 
 ---
 
-## 📝 Testing
-- Create admin: update user role in MongoDB
-- Test booking: login → book → confirm/cancel
+## Testing & Concurrency Load Test
+
+- **Standard Testing**:
+  - Create admin: update user role in MongoDB
+  - Test booking: login -> book -> confirm/cancel
+
+- **Concurrency Load Testing (1000 Requests)**:
+  The system includes a dedicated stress test (`stress.test.js`) designed to bombard the booking endpoint with 1000 concurrent requests at the exact same millisecond. 
+  This proves the reliability of the **Redis Atomic Locks**:
+  - 1000 users attempt to book seats `A1` and `A2` simultaneously.
+  - Exactly **1** user succeeds (HTTP 200).
+  - Exactly **999** users are rejected (HTTP 400 - "Seats are not available").
+  
+  **Run the test**:
+  ```bash
+  npm run test
+  ```
+
+  **Test Result:**
+  ![Concurrency Test Result](./API_REQUEST_RESPONDE_IMAGES/jest_test.png)
 
 ---
 
-## 🌐 Deployment
+
+##  Deployment
 - **MongoDB**: Atlas (free tier)
 - **Redis**: Redis Cloud (free)
 - **Backend**: Render, Railway, or your VPS
 
-## 🐳 Docker Hub
+##  Docker Hub
 
 This project is published on Docker Hub and ready to use!
 
@@ -348,9 +366,9 @@ docker push iambacktrack/ticket-system:v2
 
 ---
 
-## 👤 Author
+##  Author
 [Gufran Khan](https://github.com/iGufrankhan)  
 
 ---
 
-> ⭐ **Star this repo if you found it helpful!**
+>  **Star this repo if you found it helpful!**

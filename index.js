@@ -15,16 +15,16 @@ const startServer = async () => {
 
     // Test Redis connection
     client.ping()
-      .then(() => console.log('🏓 Redis PING successful'))
-      .catch(err => console.error('❌ Redis PING failed:', err));
+      .then(() => console.log(' Redis PING successful'))
+      .catch(err => console.error(' Redis PING failed:', err));
 
     // Start Express server
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      console.log(` Server running on http://localhost:${PORT}`);
     });
 
   } catch (error) {
-    console.error("❌ Server failed to start:", error.message);
+    console.error(" Server failed to start:", error.message);
     process.exit(1);
   }
 };

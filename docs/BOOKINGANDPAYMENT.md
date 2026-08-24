@@ -1,4 +1,4 @@
-# 🎟️ Booking & Payment System (Production Ready)
+#  Booking & Payment System (Production Ready)
 
 Complete guide to distributed seat locking, payment processing, and queue management.
 
@@ -8,9 +8,9 @@ Complete guide to distributed seat locking, payment processing, and queue manage
 
 ---
 
-## 🚀 System Components
+##  System Components
 
-### Payment Gateway ✅
+### Payment Gateway 
 - **Integration:** Razorpay (Server-to-Server)
 - **Status:** Production-Ready
 - **Features:**
@@ -20,7 +20,7 @@ Complete guide to distributed seat locking, payment processing, and queue manage
   - Refund handling (full/partial)
   - Data sanitization & security
 
-### Queue & Workers ✅
+### Queue & Workers 
 - **Queue Engine:** BullMQ + Redis
 - **Status:** Configured
 - **Workers:**
@@ -30,7 +30,7 @@ Complete guide to distributed seat locking, payment processing, and queue manage
 
 ---
 
-## 🔐 Payment Flow (Complete)
+##  Payment Flow (Complete)
 
 ### Step 1: Create Payment Order
 ```
@@ -92,7 +92,7 @@ Response: { id, payment_id, amount, status, ... }
 
 ---
 
-## 🪑 Seat Booking Flow
+##  Seat Booking Flow
 
 1. **Reserve Seats (5-min lock)**
    - `POST /api/v1/bookings/book`
@@ -118,15 +118,15 @@ Response: { id, payment_id, amount, status, ... }
 
 ---
 
-## 📊 Queue & Job Management
+##  Queue & Job Management
 
 ### Payment Queue Events
 ```javascript
 // Successful job
-✅ Job 123 completed: { orderId, amount, status }
+ Job 123 completed: { orderId, amount, status }
 
 // Failed job (with retries)
-❌ Job 123 failed: Payment verification timeout
+ Job 123 failed: Payment verification timeout
    → Auto-retry in 5 seconds (up to 3 times)
 
 // Completed jobs cleanup
@@ -145,7 +145,7 @@ POST /admin/queue/resume    - Resume queue processing
 
 ---
 
-## 🗂️ Database Models
+##  Database Models
 
 ### Booking Model
 ```javascript
@@ -198,7 +198,7 @@ POST /admin/queue/resume    - Resume queue processing
 
 ---
 
-## ⚙️ Environment Configuration
+##  Environment Configuration
 
 ```env
 # Razorpay
@@ -223,32 +223,32 @@ PAYMENT_TIMEOUT=600000        # 10 minutes (ms)
 
 ---
 
-## 🔒 Security Features
+##  Security Features
 
-✅ **HMAC-SHA256 Signature Verification**
+ **HMAC-SHA256 Signature Verification**
 - All Razorpay payments verified server-side
 - Prevents man-in-the-middle attacks
 
-✅ **Data Sanitization**
+ **Data Sanitization**
 - Sensitive fields removed before returning: `key_secret`, `cvv`, `card_number`, `token`
 - Only safe data sent to frontend
 
-✅ **JWT Authentication**
+ **JWT Authentication**
 - All payment endpoints require valid JWT token
 - Token verified before processing
 
-✅ **JOI Schema Validation**
+ **JOI Schema Validation**
 - All payment inputs validated
 - Amount range: ₹1 - ₹10,000
 - Payment methods: CARD, NETBANKING, WALLET, UPI, EMI
 
-✅ **Environment Variables**
+ **Environment Variables**
 - Razorpay credentials never hardcoded
 - Loaded from .env file
 
 ---
 
-## 📈 Booking & Payment Metrics
+##  Booking & Payment Metrics
 
 ### Seat Management
 - Lock Duration: 5 minutes (configurable)
@@ -269,7 +269,7 @@ PAYMENT_TIMEOUT=600000        # 10 minutes (ms)
 
 ---
 
-## 🛠️ Troubleshooting
+##  Troubleshooting
 
 ### Payment Order Not Created
 **Problem:** `Cannot create payment order`
@@ -301,7 +301,7 @@ PAYMENT_TIMEOUT=600000        # 10 minutes (ms)
 
 ---
 
-## ✅ Verification Checklist
+##  Verification Checklist
 
 - [ ] Razorpay credentials in .env
 - [ ] Redis instance running
@@ -321,7 +321,7 @@ MAX_SEATS_PER_BOOKING=10
 
 ---
 
-## 🚀 Running Locally
+##  Running Locally
 ```bash
 npm start        # API server
 npm run worker   # Payment worker
@@ -330,8 +330,8 @@ _Both must run together!_
 
 ---
 
-## ⭐ Key Highlights
-- 🪑 No double-booking: atomic seat locks
-- ⚡ Fast user experience: async payments
-- ⏰ Auto-release: no stuck seats
-- 🛠️ Admin can monitor and fix issues
+##  Key Highlights
+-  No double-booking: atomic seat locks
+-  Fast user experience: async payments
+-  Auto-release: no stuck seats
+-  Admin can monitor and fix issues

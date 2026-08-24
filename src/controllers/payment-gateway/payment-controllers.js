@@ -100,6 +100,10 @@ export const verifyPaymentWebhookController = asyncHandler(async (req, res) => {
 
   const verified = verifyRazorpayWebhook(rawBody, signature);
 
+  if (!verified) {
+    throw new ApiError(401, "Invalid webhook signature! Possible tampering detected.");
+  }
+
   let payload = {};
   try {
     payload = JSON.parse(rawBody);
@@ -153,4 +157,32 @@ export const refundPaymentController = asyncHandler(async (req, res) => {
 });
 
 
+export const simulatePaymentController  =asyncHandler(async(req,res)=>{
 
+  const {amount,method}=req.body;
+
+  if(!amount)
+  {
+     throw new ApiError(400,"Amount is required for simulation")
+  }
+
+  const isSuccess=Math.random()<0.9;
+
+   if (!isSuccess) {
+    throw new ApiError(400, "Payment simulation failed randomly (10% chance)");
+  }
+
+
+return res.status(200).json(
+    new ApiResponse(200, {
+      success: true,
+      paymentId: `sim_${Math.random().toString(36).substring(2, 10)}`,
+      amount,
+      method: method || "CARD"
+    }, "Payment simulated successfully")
+  );
+
+
+
+
+});
